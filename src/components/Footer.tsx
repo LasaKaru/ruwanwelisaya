@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { LotusDivider } from './Icon';
 import Icon from './Icon';
 
@@ -16,11 +17,16 @@ const LEGAL = [
   { label: 'About Us',       href: '/about' },
   { label: 'Contact',        href: '/contact' },
   { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Admin',          href: '/admin' },
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  // Admin area has its own chrome — hide the public footer there.
+  if (pathname.startsWith('/admin')) return null;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();

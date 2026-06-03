@@ -14,10 +14,14 @@ const NAV_LINKS = [
   { href: '/donate',     label: 'Donate' },
 ];
 
-export default function Navbar({ transparentTop = true }: { transparentTop?: boolean }) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  // Only the home page has a full-bleed hero behind the nav; everywhere else
+  // the nav sits on a light background and must be solid from the top.
+  const transparentTop = pathname === '/';
 
   useEffect(() => {
     if (!transparentTop) return;
@@ -26,6 +30,9 @@ export default function Navbar({ transparentTop = true }: { transparentTop?: boo
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [transparentTop]);
+
+  // Admin area has its own chrome — hide the public nav there.
+  if (pathname.startsWith('/admin')) return null;
 
   const isScrolled = !transparentTop || scrolled;
 

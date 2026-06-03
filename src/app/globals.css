@@ -1179,3 +1179,61 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   .rw-tile-pulse, .rw-tile-pinnacle, .rw-tile-bird, .rw-tile-star,
   .rw-tile-flame, .rw-tile-glow, .rw-tile-smoke, .rw-tile-petal { animation: none; }
 }
+
+/* ============================================================
+   ADMIN LOGIN + DASHBOARD (authenticated /admin area)
+   ============================================================ */
+.rw-login {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(212,175,55,0.10), transparent 60%),
+    linear-gradient(180deg, #fbf7ee 0%, #f3ead6 100%);
+}
+.rw-login__card {
+  width: 100%; max-width: 400px;
+  background: #fff;
+  border: 1px solid rgba(212,175,55,0.22);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(120,90,30,0.14);
+  padding: 40px 34px 28px;
+  text-align: center;
+}
+.rw-login__brand { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 26px; }
+.rw-login__eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--light); margin-top: 8px; }
+.rw-login__title { font-family: var(--font-cinzel), serif; font-size: 26px; font-weight: 400; color: var(--dark); letter-spacing: 0.02em; }
+.rw-login__sub { font-size: 13px; line-height: 1.6; color: var(--med); margin-top: 4px; }
+.rw-login__form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+.rw-login__field { display: flex; flex-direction: column; gap: 7px; }
+.rw-login__lbl { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--med); }
+.rw-login__error {
+  font-size: 13px; color: #a23b3b;
+  background: rgba(180,72,72,0.10); border: 1px solid rgba(180,72,72,0.28);
+  border-radius: 6px; padding: 10px 12px; margin: -2px 0 2px;
+}
+.rw-login__back { display: inline-block; margin-top: 20px; font-size: 12px; color: var(--med); letter-spacing: 0.04em; }
+.rw-login__back:hover { color: var(--pinnacle-gold); }
+
+.rw-admin-page { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; min-height: 100vh; }
+.rw-admin-page__bar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.rw-admin-page__eyebrow { font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--light); }
+.rw-admin-page__title { font-family: var(--font-cinzel), serif; font-size: 30px; font-weight: 400; color: var(--dark); letter-spacing: 0.02em; margin-top: 4px; }
+.rw-admin-page__user { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--med); }
+.rw-admin-page__user strong { color: var(--dark); }
+.rw-admin-page__warn {
+  background: rgba(212,175,55,0.10); border: 1px solid rgba(212,175,55,0.35);
+  border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: #7a5a18;
+  margin-bottom: 24px;
+}
+.rw-admin-page__warn code { background: rgba(0,0,0,0.06); padding: 1px 6px; border-radius: 3px; font-size: 12px; margin: 0 2px; }
+
+/* Dashboard reuses the dark admin panel styling, but as an inline board */
+.rw-admin-board {
+  background: #1a140e; color: #f0e6d6;
+  border: 1px solid rgba(212,175,55,0.20);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+.rw-admin-board .rw-admin__body { max-height: none; }

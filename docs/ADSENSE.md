@@ -42,7 +42,7 @@ google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
 
 ## Step 4 — Configure each ad slot
 
-Open the site, click the **Admin** button (bottom-left) or press <kbd>⌘ .</kbd> / <kbd>Ctrl .</kbd>, go to the **Ads** tab, and for each slot paste its AdSense unit code:
+Sign in at **`/admin/login`** (the **Admin** link is in the site footer), open the **Ads** tab on the dashboard, and for each slot paste its AdSense unit code:
 
 ```html
 <ins class="adsbygoogle"
@@ -76,7 +76,7 @@ Saved codes persist in `localStorage` under `rw_ad_{slotId}`. They are **per-bro
 
 ## Production hardening (recommended)
 
-The localStorage admin is great for a single operator but is **client-side and per-browser**. For a real deployment you should move ad configuration server-side:
+Access to the admin dashboard is now **login-protected** (see the [Admin Panel](../README.md#admin-panel) section). The ad codes themselves, however, are still stored **client-side and per-browser** in `localStorage`. For a real deployment you should move ad configuration server-side:
 
 1. Store slot HTML in an env var, CMS, or small DB.
 2. Render it from a server component (so every visitor sees the same ads and there's no flash of placeholder).

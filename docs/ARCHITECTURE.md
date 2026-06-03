@@ -63,13 +63,18 @@ flowchart TD
 |-----------|------|-----|
 | `layout.tsx` | server | Static metadata, JSON-LD, font wiring |
 | `app/page.tsx`, `about`, `privacy`, `blog/[slug]` | server | No client state; better SEO + smaller JS |
+| `app/admin/page.tsx` | server (dynamic) | Reads the session cookie; renders dashboard + logout |
 | `events`, `gallery`, `blog` (index), `community`, `donate`, `contact` | client | `useState` for filters / forms / detail views |
-| `Navbar`, `Footer` | client | Scroll listener, form state |
-| `AdSlot`, `AdminPanel` | client | `localStorage`, keyboard shortcuts |
+| `app/admin/login/page.tsx` | client | `useFormState` / `useFormStatus` for the login form |
+| `Navbar`, `Footer` | client | Scroll listener, form state, hide-on-`/admin` |
+| `AdSlot`, `AdminDashboard` | client | `localStorage` read/write |
 | `FadeIn` | client | `IntersectionObserver` |
 | `Feedback` | client | Form state |
 | `StupaScene`, `GalleryScene`, `EventScenes` | client | Marked client for animation parity (could be server later) |
 | `Icon` | server-safe | Pure SVG, no hooks |
+| `middleware.ts` | edge | Verifies the session JWT on every `/admin/*` request |
+| `app/admin/actions.ts` | server action | `loginAction` / `logoutAction` (set/clear cookie) |
+| `lib/auth.ts` | server/edge | JWT sign/verify (`jose`) + credential check |
 
 > **Optimization note:** the SVG scenes don't strictly need to be client components — they have no hooks. Converting them to server components would shrink the client bundle. Tracked in the roadmap.
 
@@ -122,6 +127,45 @@ flowchart LR
 
 Each scene is a `<div className="rw-scene">` wrapping an SVG; motion (lantern sway, flame flicker, bird drift, petal fall, glow pulse) is defined as CSS `@keyframes` in `globals.css`, gated by the `animations` feature flag conceptually.
 
+## 6b. Authentication
+
+The `/admin` area is the one authenticated surface. It uses a stateless,
+cookie-based session — no session store or database.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant MW as middleware.ts (edge)
+    participant LP as /admin/login
+    participant SA as loginAction (server)
+    participant AD as /admin (server)
+
+    B->>MW: GET /admin
+    MW->>MW: verify JWT cookie (jose)
+    alt no/invalid session
+        MW-->>B: 307 redirect → /admin/login?from=/admin
+        B->>LP: GET /admin/login
+        B->>SA: POST credentials (server action)
+        SA->>SA: verifyCredentials() (constant-time)
+        alt valid
+            SA-->>B: Set-Cookie rw_admin_session (httpOnly, 8h) + redirect /admin
+        else invalid
+            SA-->>B: { error } re-rendered in form
+        end
+    else valid session
+        MW-->>AD: allow
+        AD-->>B: dashboard HTML
+    end
+```
+
+**Design choices**
+
+- **`jose`** is used (not `jsonwebtoken`) because it runs in the **edge runtime** where the middleware executes.
+- The token is **HS256**, signed with `AUTH_SECRET`, carrying `{ username, role: 'admin' }`, expiring in 8h.
+- Cookie is **httpOnly** (no JS access), `sameSite=lax`, `secure` in production.
+- Credentials live in **env vars** (`ADMIN_USERNAME` / `ADMIN_PASSWORD`); insecure dev defaults are used only when unset, and `/admin` shows a warning banner in that case (`usingDefaultCredentials()`).
+- This is **single-operator** auth. For multiple users / roles, swap `lib/auth.ts` for a provider like Auth.js — the middleware contract (`verifySessionToken`) stays the same.
+
 ## 7. Ads & admin
 
 ```mermaid
@@ -153,5 +197,7 @@ Keys: `rw_ad_{slotId}`, `rw_flags`, `rw_payments`. See [ADSENSE.md](ADSENSE.md) 
 | Add a new ad slot | Add the id to `SLOTS` in `AdminPanel.tsx` and drop an `<AdSlot id=…>` on the page |
 | Add a new page | Create `src/app/<route>/page.tsx`, add it to `Navbar`/`Footer` links and `sitemap.ts` |
 | New illustration | Add a branch to the `GalleryScene` or `EventScenes` dispatcher + CSS keyframes |
+| Change admin login | Set `ADMIN_USERNAME` / `ADMIN_PASSWORD` / `AUTH_SECRET` env vars |
+| Protect another route | Add its path to the `matcher` in `src/middleware.ts` |
 
 Whenever you do any of the above, update the README tables, this document, and `CHANGELOG.md`.

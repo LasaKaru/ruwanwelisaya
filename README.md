@@ -43,7 +43,8 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 | 🪔 **Community** | "Light a virtual lamp" interaction with a live counter, plus a pilgrim reflections forum |
 | ❤️ **Donate** | Donation flow supporting Stripe (card), PayPal, and bank transfer, with fund allocation breakdown |
 | ℹ️ **Static pages** | About, Contact, Privacy Policy — required and structured for AdSense approval |
-| 📢 **Ads** | `AdSlot` components across the site, configurable per-slot via a built-in Admin panel |
+| 🔐 **Admin** | Login-protected `/admin` dashboard (httpOnly JWT session + route middleware) to manage ads, payments & feature flags |
+| 📢 **Ads** | `AdSlot` components across the site, configurable per-slot from the Admin dashboard |
 | 🔍 **SEO** | Metadata API, Open Graph, Twitter cards, JSON-LD structured data, `sitemap.xml`, `robots.txt`, `ads.txt` |
 | 🎬 **Animation** | Scroll-reveal (`FadeIn`) + CSS keyframe animations on every SVG scene (lantern sway, flame flicker, bird drift, petal fall) |
 
@@ -57,7 +58,8 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 - **Styling:** Plain CSS with custom properties (design tokens) — no CSS framework
 - **Fonts:** `next/font/google` — Cinzel (display) + Inter (body)
 - **Icons / Art:** Inline SVG (no image assets, no external requests)
-- **Persistence:** `localStorage` (ad codes, feature flags) — no backend required
+- **Auth:** Edge middleware + signed JWT session cookie via [`jose`](https://github.com/panva/jose)
+- **Persistence:** `localStorage` (ad codes, feature flags) — no database required
 
 ---
 
@@ -74,15 +76,30 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 # 1. Install dependencies
 npm install
 
-# 2. Start the dev server (http://localhost:3000)
+# 2. Set up environment variables (admin login, etc.)
+cp .env.example .env.local
+#   then edit .env.local — at minimum set ADMIN_PASSWORD and AUTH_SECRET
+
+# 3. Start the dev server (http://localhost:3000)
 npm run dev
 
-# 3. Production build
+# 4. Production build
 npm run build
 
-# 4. Serve the production build
+# 5. Serve the production build
 npm start
 ```
+
+### Environment variables
+
+Copy `.env.example` → `.env.local` and fill these in (the app falls back to insecure dev defaults if unset, so **always set them in production**):
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ADMIN_USERNAME` | recommended | Username for the `/admin` login (default `admin`) |
+| `ADMIN_PASSWORD` | **yes (prod)** | Password for the `/admin` login |
+| `AUTH_SECRET` | **yes (prod)** | Secret that signs the admin session JWT — use 32+ random chars (`openssl rand -base64 32`) |
+| `NEXT_PUBLIC_ADSENSE_CLIENT` | optional | Your AdSense publisher ID, e.g. `ca-pub-…` |
 
 ### Scripts
 
@@ -116,12 +133,17 @@ npm start
 │   │   ├── donate/page.tsx     # /donate
 │   │   ├── about/page.tsx      # /about
 │   │   ├── contact/page.tsx    # /contact
-│   │   └── privacy/page.tsx    # /privacy
+│   │   ├── privacy/page.tsx    # /privacy
+│   │   └── admin/             # 🔐 Login-protected admin area
+│   │       ├── actions.ts      # Server actions: loginAction / logoutAction
+│   │       ├── page.tsx        # /admin dashboard (session-gated)
+│   │       └── login/page.tsx  # /admin/login form
+│   ├── middleware.ts           # Protects /admin/* (redirects to login)
 │   ├── components/             # Reusable UI + SVG scene components
-│   │   ├── Navbar.tsx          # Sticky nav, transparent→solid on scroll
-│   │   ├── Footer.tsx          # Links + newsletter form
+│   │   ├── Navbar.tsx          # Sticky nav, solid off-home, hidden on /admin
+│   │   ├── Footer.tsx          # Links + newsletter form, hidden on /admin
 │   │   ├── AdSlot.tsx          # Renders ad HTML from localStorage, or placeholder
-│   │   ├── AdminPanel.tsx      # Floating admin (ads / settings / payments)
+│   │   ├── AdminDashboard.tsx  # Admin controls (ads / settings / payments / reset)
 │   │   ├── FadeIn.tsx          # IntersectionObserver scroll-reveal wrapper
 │   │   ├── Feedback.tsx        # Star-rating feedback form
 │   │   ├── Icon.tsx            # Inline SVG icon set + Mark/Lotus/LotusDivider
@@ -130,7 +152,9 @@ npm start
 │   │   └── EventScenes.tsx     # Festival scenes (Vesak / Poson / Esala / Poya / Alms)
 │   └── lib/                    # Typed data layer (no DB)
 │       ├── posts.ts            # Blog posts + helpers (getPost, getRelatedPosts)
-│       └── events.ts           # Poya days + daily observances
+│       ├── events.ts           # Poya days + daily observances
+│       └── auth.ts             # Session JWT + credential helpers
+├── .env.example                # Documents required environment variables
 ├── project/                    # Original Claude Design handoff bundle (prototypes, transcripts)
 ├── docs/                       # Architecture & AdSense deep-dive docs
 ├── next.config.mjs
@@ -144,7 +168,7 @@ npm start
 
 ### Rendering Model
 
-The site is **statically generated** — every route prerenders to HTML at build time (41 routes including 26 blog posts). There is no server runtime or database; interactive features run client-side and persist to `localStorage`.
+All public content is **statically generated** — every content route prerenders to HTML at build time (26 blog posts among them). There is no database; interactive features run client-side and persist to `localStorage`. The only server-side pieces are the **auth middleware** and the dynamic **`/admin`** route.
 
 ```mermaid
 flowchart TD
@@ -223,6 +247,8 @@ flowchart LR
 | `/community` | `app/community/page.tsx` | Static (client) | Virtual lamp + forum |
 | `/donate` | `app/donate/page.tsx` | Static (client) | Stripe / PayPal / Bank |
 | `/about` `/contact` `/privacy` | `app/*/page.tsx` | Static | AdSense-required pages |
+| `/admin/login` | `app/admin/login/page.tsx` | Static | Login form (server action) |
+| `/admin` | `app/admin/page.tsx` | Dynamic | Session-gated dashboard (middleware-protected) |
 | `/sitemap.xml` `/robots.txt` | `app/sitemap.ts` `app/robots.ts` | Generated | SEO |
 
 ---
@@ -265,7 +291,26 @@ The site is wired for AdSense but ships with **placeholders** so it builds and r
 
 ## Admin Panel
 
-A floating **Admin** button (bottom-left) opens a control panel. Toggle it any time with <kbd>⌘ .</kbd> / <kbd>Ctrl .</kbd>.
+The admin area is **login-protected**. Visit **`/admin`** (also linked discreetly in the footer) — unauthenticated visitors are redirected to **`/admin/login`**.
+
+### How auth works
+
+```mermaid
+flowchart LR
+    U["Visitor → /admin"] --> M{"middleware.ts<br/>valid session cookie?"}
+    M -- no --> L["/admin/login"]
+    L --> A["loginAction (server)<br/>verify credentials"]
+    A -- ok --> C["Set httpOnly JWT cookie<br/>(jose, HS256, 8h)"]
+    C --> D["/admin dashboard"]
+    M -- yes --> D
+    D --> O["logoutAction → clear cookie"]
+```
+
+- Credentials come from `ADMIN_USERNAME` / `ADMIN_PASSWORD`; the session JWT is signed with `AUTH_SECRET` (see [environment variables](#environment-variables)).
+- The session cookie is **httpOnly**, `sameSite=lax`, and `secure` in production.
+- `src/middleware.ts` guards every `/admin/*` route except the login page.
+
+### Dashboard tabs
 
 | Tab | Purpose |
 |-----|---------|
@@ -274,9 +319,9 @@ A floating **Admin** button (bottom-left) opens a control panel. Toggle it any t
 | **Payments** | Enable/disable Stripe, PayPal, Bank on the donate page |
 | **Reset** | Clear all saved ad codes and settings |
 
-Everything persists to `localStorage` — no backend, no build step needed to change ads.
+Ad codes and flags persist to `localStorage` (per-browser). The dashboard itself is gated behind login.
 
-> **Note:** This is a client-side convenience panel, not an authenticated CMS. For multi-user or secured admin, see the [Roadmap](#roadmap).
+> **Note:** The login authenticates *access to the dashboard*; ad config is still stored per-browser in `localStorage`. For shared, server-side ad configuration, see the [Roadmap](#roadmap).
 
 ---
 
@@ -322,9 +367,9 @@ npm run build
 npm start    # serves on $PORT (default 3000)
 ```
 
-### Static export
+> **Set environment variables on your host** (`ADMIN_USERNAME`, `ADMIN_PASSWORD`, `AUTH_SECRET`) — see [Environment variables](#environment-variables). On Vercel, add them under *Project → Settings → Environment Variables*.
 
-Because all routes are statically generated, this can also be exported and served from any static host / CDN.
+> **Note on hosting:** because of the auth **middleware** and the dynamic `/admin` route, the app needs an edge/Node runtime (Vercel, Netlify, a Node server, etc.) — it is **not** a pure static export. All public content pages remain statically generated for speed.
 
 ---
 
@@ -346,7 +391,8 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the deep-dive and **[do
 
 ## Roadmap
 
-- [ ] Authenticated, server-side admin (replace the localStorage panel)
+- [x] Authenticated admin with login + session middleware
+- [ ] Server-side ad/config storage (shared across browsers, not just localStorage)
 - [ ] Real backend for forum posts, photo uploads, and the lamp counter
 - [ ] Live Stripe / PayPal payment processing (currently UI-only)
 - [ ] Newsletter integration (currently UI-only)

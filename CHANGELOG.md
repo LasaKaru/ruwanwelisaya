@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-06-03
+
+### Added
+- **Authenticated admin area.** New login-protected `/admin` dashboard replacing the open floating panel:
+  - `/admin/login` page with server-action login (`useFormState` / `useFormStatus`).
+  - `src/lib/auth.ts` — JWT session sign/verify via `jose` (HS256, 8h), constant-time credential check, default-credential detection.
+  - `src/middleware.ts` — edge middleware guarding all `/admin/*` routes, redirecting to login.
+  - `src/app/admin/actions.ts` — `loginAction` / `logoutAction` setting/clearing an httpOnly session cookie.
+  - `src/components/AdminDashboard.tsx` — ads / settings / payments / reset controls (migrated from the old panel).
+  - `.env.example` documenting `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `AUTH_SECRET`, `NEXT_PUBLIC_ADSENSE_CLIENT`.
+  - Discreet **Admin** link added to the footer.
+- New dependency: `jose` (edge-compatible JWT).
+
+### Changed
+- `Navbar` is now solid on all non-home pages (fixes invisible nav over light backgrounds) and hides itself on `/admin`.
+- `Footer` hides itself on `/admin`.
+- Docs: README (Admin Panel + auth diagram, env vars, deployment notes), `docs/ARCHITECTURE.md` (auth flow + component table), `docs/ADSENSE.md` (admin access via login).
+
+### Removed
+- `src/components/AdminPanel.tsx` (floating, unauthenticated panel) and its global mount in `layout.tsx`.
+
+### Notes
+- The app now requires an edge/Node runtime (middleware + dynamic `/admin`); public pages remain statically generated.
+- Build verified: 43 routes, zero TypeScript errors.
+
 ## [1.0.0] — 2026-06-03
 
 ### Added
