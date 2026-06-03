@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Navbar (scrolled)</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { padding: 0; background: linear-gradient(135deg, #2a2018, #4a3520); height: 220px; }
+  .card { width: 700px; padding: 0; background: transparent; }
+  .nav { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(212,175,55,0.15); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .mark { width: 32px; height: 32px; background: linear-gradient(135deg, #d4af37, #c77b2b); border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .mark svg { width: 18px; height: 18px; }
+  .wordmark { font-family: var(--font-serif); font-size: 14px; letter-spacing: 0.18em; color: #333; }
+  .links { display: flex; gap: 22px; align-items: center; }
+  .links a { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #333; text-decoration: none; position: relative; }
+  .links a.active { color: #d4af37; }
+  .links a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: #d4af37; }
+  .theme { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #333; }
+  .below { padding: 36px 24px 24px; color: rgba(255,255,255,0.7); font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="nav">
+    <div class="brand">
+      <div class="mark">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><path d="M32 8 L32 16"/><rect x="27" y="22" width="10" height="5"/><path d="M14 48 Q14 28 32 28 Q50 28 50 48 Z"/><rect x="10" y="48" width="44" height="3"/></svg>
+      </div>
+      <span class="wordmark">RUWANWELISAYA</span>
+    </div>
+    <div class="links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Places</a>
+      <a href="#">Events</a>
+      <a href="#">Gallery</a>
+      <a href="#">Guides</a>
+      <a href="#">Donate</a>
+      <span class="theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </div>
+  </div>
+  <div class="below">Glass · backdrop-blur(20px) · gold-border 15%</div>
+</div>
+</body>
+</html>

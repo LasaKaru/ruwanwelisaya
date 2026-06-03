@@ -1,0 +1,280 @@
+/* ============================================================
+   RUWANWELISAYA — COLORS & TYPOGRAPHY
+   Sacred heritage palette for the Great Stupa of Anuradhapura.
+   Sources: src/app/globals.css + tailwind tokens in the Next.js
+   codebase (LasaKaru/ruwanwelisaya-web).
+   ============================================================ */
+
+/* ---------- FONTS ----------
+   The codebase uses Google Fonts via next/font:
+   - Cinzel (serif display, headings, brand wordmark)
+   - Inter (sans, body, UI, navigation)
+   We load both from Google Fonts here for parity.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+
+:root {
+  /* ---------- BRAND COLORS ---------- */
+  /* Pinnacle Gold — the crown of the stupa. Primary accent. */
+  --pinnacle-gold:        #d4af37;
+  --pinnacle-gold-light:  #e8d48b;
+  --pinnacle-gold-dark:   #b8941f;
+
+  /* Saffron — robe of the bhikkhu, warm secondary */
+  --saffron:              #c77b2b;
+  --saffron-light:        #e8a84c;
+
+  /* Stupa White — pristine dome, foundation surface */
+  --stupa-white:          #f8f9fa;
+  --warm-white:           #fefdfb;   /* default light bg */
+  --cream:                #faf8f5;   /* secondary surface, alt sections */
+
+  /* Neutral text scale */
+  --dark-grey:            #333333;   /* primary text, headings (light mode) */
+  --medium-grey:          #666666;   /* body text, secondary */
+  --light-grey:           #999999;   /* tertiary, meta, captions */
+
+  /* Overlays for image hero sections */
+  --overlay-dark:         rgba(0, 0, 0, 0.5);
+  --overlay-light:        rgba(248, 249, 250, 0.85);
+
+  /* ---------- SEMANTIC COLORS ---------- */
+  --color-bg:             var(--warm-white);
+  --color-bg-alt:         var(--cream);
+  --color-surface:        #ffffff;
+  --color-border:         rgba(212, 175, 55, 0.15);  /* gold @ 15% */
+  --color-border-strong:  rgba(212, 175, 55, 0.30);
+  --color-fg:             var(--dark-grey);
+  --color-fg-muted:       var(--medium-grey);
+  --color-fg-subtle:      var(--light-grey);
+  --color-accent:         var(--pinnacle-gold);
+  --color-accent-warm:    var(--saffron);
+
+  --color-success:        #4f7d4f;
+  --color-error:          #b04848;
+
+  /* ---------- GRADIENTS ---------- */
+  --gradient-gold:        linear-gradient(135deg, #d4af37 0%, #c77b2b 100%);
+  --gradient-gold-soft:   linear-gradient(135deg, rgba(212,175,55,0.10), rgba(199,123,43,0.05));
+  --gradient-divider:     linear-gradient(90deg, transparent, var(--pinnacle-gold), transparent);
+  --gradient-hero-scrim:  linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6) 100%);
+
+  /* ---------- TYPOGRAPHY FAMILIES ---------- */
+  --font-serif: "Cinzel", Georgia, "Times New Roman", serif;
+  --font-sans:  "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ---------- TYPE SCALE ---------- */
+  /* Display sizes lean LARGE — hero treatments are 5xl–9xl Cinzel. */
+  --text-9xl:  8rem;     /* 128px — hero brand wordmark */
+  --text-7xl:  4.5rem;   /* 72px  — section heroes */
+  --text-5xl:  3rem;     /* 48px  — h1 on interior pages */
+  --text-4xl:  2.25rem;  /* 36px  — h2 */
+  --text-3xl:  1.875rem; /* 30px  — h2 (smaller) */
+  --text-2xl:  1.5rem;   /* 24px  — h3, blockquote */
+  --text-xl:   1.25rem;  /* 20px  — h4, card title */
+  --text-lg:   1.125rem; /* 18px  — large body / lede */
+  --text-base: 1rem;     /* 16px  — body */
+  --text-sm:   0.875rem; /* 14px  — secondary body, links */
+  --text-xs:   0.75rem;  /* 12px  — eyebrows, meta, all-caps labels */
+
+  /* ---------- LETTER SPACING (the brand's signature) ---------- */
+  /* Eyebrow / all-caps labels use very wide tracking (0.2em–0.3em).
+     Headings have a subtle 0.02em positive tracking. */
+  --tracking-tight:   -0.02em;
+  --tracking-normal:  0;
+  --tracking-heading: 0.02em;
+  --tracking-wide:    0.1em;
+  --tracking-wider:   0.15em;
+  --tracking-widest:  0.2em;
+  --tracking-eyebrow: 0.3em;   /* "THE GREAT STUPA • ANURADHAPURA" */
+
+  /* ---------- LINE HEIGHT ---------- */
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.7;   /* body copy default in the codebase */
+
+  /* ---------- SPACING / RADII / ELEVATION ---------- */
+  /* Section padding in the codebase trends GENEROUS: py-32 (128px) on
+     desktop. Smaller surfaces use py-8 to py-16. */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-32: 128px;
+
+  /* Radii — small, restrained. The brand reads "ancient stonework",
+     never "modern card-app". Max radius is 12px; pills only for tags. */
+  --radius-sm:   2px;    /* buttons (rounded-sm in Tailwind = 2px) */
+  --radius-md:   6px;
+  --radius-lg:   8px;    /* cards, content blocks */
+  --radius-xl:   12px;
+  --radius-full: 9999px; /* pills, avatars, dot indicators */
+
+  /* Shadows — soft, gold-tinted on hover, never crisp drop shadows */
+  --shadow-sm:        0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:        0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg:        0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-gold-sm:   0 4px 14px rgba(212, 175, 55, 0.15);
+  --shadow-gold-md:   0 10px 30px rgba(212, 175, 55, 0.20);
+  --shadow-glow:      0 0 40px rgba(212, 175, 55, 0.30), 0 0 80px rgba(212, 175, 55, 0.10);
+
+  /* Glass / backdrop blur (used on the scrolled navbar) */
+  --glass-bg-light:  rgba(255, 255, 255, 0.75);
+  --glass-bg-dark:   rgba(20, 20, 20, 0.85);
+  --glass-blur:      20px;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:    200ms;
+  --duration-base:    300ms;
+  --duration-slow:    500ms;
+  --duration-cinematic: 800ms;  /* used on Framer Motion fade-ins */
+}
+
+/* ---------- DARK MODE OVERRIDES ----------
+   The site supports a dark mode via html.dark.
+*/
+html.dark {
+  --color-bg:           #0f0f0f;
+  --color-bg-alt:       #1a1a1a;
+  --color-surface:      #1e1e1e;
+  --color-border:       rgba(212, 175, 55, 0.20);
+  --color-fg:           #e0ddd8;
+  --color-fg-muted:     #a0a0a0;
+  --color-fg-subtle:    #787878;
+}
+
+/* ============================================================
+   SEMANTIC TYPE STYLES — use these as utility classes.
+   Mirror what the codebase composes inline with Tailwind.
+   ============================================================ */
+
+.h-display {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 8vw, var(--text-9xl));
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-fg);
+  font-weight: 400;
+}
+
+.h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-fg);
+  font-weight: 400;
+}
+
+.h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(var(--text-2xl), 3.5vw, var(--text-4xl));
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-fg);
+  font-weight: 400;
+}
+
+.h3 {
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-fg);
+  font-weight: 400;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--pinnacle-gold);
+  font-weight: 500;
+}
+
+.eyebrow-wide {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--color-fg-muted);
+}
+
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-fg-muted);
+}
+
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-fg-muted);
+}
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-fg-subtle);
+}
+
+.quote {
+  font-family: var(--font-serif);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-relaxed);
+  font-style: italic;
+  color: var(--color-fg);
+}
+
+/* Gold gradient text — the signature treatment */
+.text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Lotus divider — used at the top of footers and section breaks */
+.lotus-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.lotus-divider::before,
+.lotus-divider::after {
+  content: "";
+  width: 96px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4));
+}
+.lotus-divider::after {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.4), transparent);
+}
+.lotus-divider .lotus {
+  color: var(--pinnacle-gold);
+  opacity: 0.5;
+  font-size: 1.5rem;
+}

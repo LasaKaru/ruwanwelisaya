@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Festival Banner</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .b { padding: 12px 20px; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; color: #fff; font-family: var(--font-sans); font-size: 13px; }
+  .b .greet { flex: 1; text-align: center; }
+  .b .x { opacity: 0.7; padding: 0 8px; }
+  .vesak { background: linear-gradient(90deg, rgba(245,158,11,0.92), rgba(234,179,8,0.92)); }
+  .poson { background: linear-gradient(90deg, rgba(249,115,22,0.92), rgba(245,158,11,0.92)); }
+  .esala { background: linear-gradient(90deg, rgba(225,29,72,0.92), rgba(249,115,22,0.92)); }
+  .poya  { background: linear-gradient(90deg, rgba(251,191,36,0.92), rgba(250,204,21,0.92)); }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); padding: 0 20px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="b vesak"><span class="greet">🏮 Vesak Mangalyai Wewa! — Celebrating the Triple Gem</span><span class="x">×</span></div>
+  <div class="lbl">VESAK · amber → yellow</div>
+  <div class="b poson"><span class="greet">🪷 Poson Poya Mangalyai Wewa! — Arrival of Buddhism to Lanka</span><span class="x">×</span></div>
+  <div class="lbl">POSON · orange → amber</div>
+  <div class="b esala"><span class="greet">🐘 Esala Perahera Mangalyai! — The Grand Procession</span><span class="x">×</span></div>
+  <div class="lbl">ESALA · rose → orange</div>
+  <div class="b poya"><span class="greet">🪔 Poya Mangalyai Wewa! — Full Moon Observance Day</span><span class="x">×</span></div>
+  <div class="lbl">POYA · amber → yellow</div>
+</div>
+</body>
+</html>

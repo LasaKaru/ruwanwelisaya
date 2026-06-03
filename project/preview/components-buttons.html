@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Buttons</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; }
+  .row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 0.15em; border-radius: 2px; cursor: pointer; transition: all 300ms; border: 1px solid transparent; }
+  .btn-md { padding: 12px 24px; font-size: 12px; }
+  .btn-sm { padding: 8px 16px; font-size: 11px; }
+  .btn-lg { padding: 16px 32px; font-size: 13px; }
+  .primary { background: linear-gradient(135deg, #d4af37, #c77b2b); color: #fff; box-shadow: 0 4px 14px rgba(212,175,55,0.20); }
+  .secondary { border-color: #d4af37; color: #d4af37; background: transparent; }
+  .ghost { background: rgba(212,175,55,0.08); color: #d4af37; }
+  .disabled { background: linear-gradient(135deg, #d4af37, #c77b2b); color: #fff; opacity: 0.4; cursor: not-allowed; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); width: 80px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <span class="lbl">PRIMARY</span>
+    <button class="btn btn-md primary">Make a Donation</button>
+    <button class="btn btn-sm primary">Subscribe</button>
+    <button class="btn btn-lg primary">Discover the Sacred</button>
+  </div>
+  <div class="row">
+    <span class="lbl">SECONDARY</span>
+    <button class="btn btn-md secondary">View Full Gallery</button>
+    <button class="btn btn-sm secondary">Read More</button>
+  </div>
+  <div class="row">
+    <span class="lbl">GHOST</span>
+    <button class="btn btn-sm ghost">Explore →</button>
+    <button class="btn btn-sm ghost">Share</button>
+    <button class="btn btn-md disabled">Submitting…</button>
+  </div>
+</div>
+</body>
+</html>

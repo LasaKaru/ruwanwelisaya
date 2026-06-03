@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Eyebrows & Tracking</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 28px 32px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+  .item { display: flex; flex-direction: column; gap: 6px; }
+  .label { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); }
+  .gold  { color: #d4af37; font-family: var(--font-sans); font-size: 12px; text-transform: uppercase; font-weight: 500; }
+  .dark  { color: #333;   font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; font-weight: 500; }
+  .white-on-d { background: #1e1e1e; color: rgba(255,255,255,0.7); font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; font-weight: 300; padding: 12px 14px; border-radius: 6px; }
+  .t-wide   { letter-spacing: 0.10em; }
+  .t-wider  { letter-spacing: 0.15em; }
+  .t-widest { letter-spacing: 0.20em; }
+  .t-eyebr  { letter-spacing: 0.30em; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="grid">
+    <div class="item">
+      <span class="label">+0.10em · t-wide</span>
+      <span class="dark t-wide">Posted in Pilgrim Stories</span>
+    </div>
+    <div class="item">
+      <span class="label">+0.15em · t-wider</span>
+      <span class="dark t-wider">Heritage · Anuradhapura</span>
+    </div>
+    <div class="item">
+      <span class="label">+0.20em · t-widest (gold eyebrow)</span>
+      <span class="gold t-widest">Today's Dhamma</span>
+    </div>
+    <div class="item">
+      <span class="label">+0.30em · hero subtitle</span>
+      <span class="white-on-d t-eyebr">The Great Stupa · Anuradhapura</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

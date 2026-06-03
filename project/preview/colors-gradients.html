@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gradients & Overlays</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { padding: 0; }
+  .card { width: 700px; padding: 24px 28px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .swatch { height: 84px; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+  .swatch .nm { font-family: var(--font-serif); font-size: 13px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .swatch .css { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.85); }
+  .gold-grad { background: linear-gradient(135deg, #d4af37 0%, #c77b2b 100%); }
+  .gold-soft { background: linear-gradient(135deg, rgba(212,175,55,0.10), rgba(199,123,43,0.05)), #fefdfb; }
+  .gold-soft .nm, .gold-soft .css { color: #333; text-shadow: none; }
+  .divider-grad { background: linear-gradient(90deg, transparent, #d4af37, transparent), #fefdfb; }
+  .divider-grad .nm, .divider-grad .css { color: #333; text-shadow: none; }
+  .hero-scrim { background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6)), #b8941f; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">Gradients</div>
+  <div class="grid">
+    <div class="swatch gold-grad">
+      <div class="nm">Gradient Gold</div>
+      <div class="css">linear-gradient(135deg, #d4af37, #c77b2b)</div>
+    </div>
+    <div class="swatch gold-soft">
+      <div class="nm">Gradient Gold Soft</div>
+      <div class="css">gold @ 10% → saffron @ 5%</div>
+    </div>
+    <div class="swatch divider-grad">
+      <div class="nm">Divider Sweep</div>
+      <div class="css">90deg, transparent → gold → transparent</div>
+    </div>
+    <div class="swatch hero-scrim">
+      <div class="nm">Hero Scrim</div>
+      <div class="css">180deg black/40 → black/20 → black/60</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

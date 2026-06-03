@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spacing Scale</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 26px 32px; }
+  .row { display: flex; align-items: center; gap: 16px; padding: 4px 0; }
+  .name { font-family: var(--font-mono); font-size: 11px; color: #333; width: 44px; }
+  .px { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); width: 56px; }
+  .bar { height: 10px; background: #d4af37; border-radius: 2px; }
+  .use { font-family: var(--font-sans); font-size: 11px; color: #666; margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row"><span class="name">--1</span><span class="px">4px</span><span class="bar" style="width:4px"></span><span class="use">hairlines, tight gaps</span></div>
+  <div class="row"><span class="name">--2</span><span class="px">8px</span><span class="bar" style="width:8px"></span><span class="use">inline icon gap</span></div>
+  <div class="row"><span class="name">--3</span><span class="px">12px</span><span class="bar" style="width:12px"></span><span class="use">button inner</span></div>
+  <div class="row"><span class="name">--4</span><span class="px">16px</span><span class="bar" style="width:16px"></span><span class="use">card inner gap</span></div>
+  <div class="row"><span class="name">--6</span><span class="px">24px</span><span class="bar" style="width:24px"></span><span class="use">card padding</span></div>
+  <div class="row"><span class="name">--8</span><span class="px">32px</span><span class="bar" style="width:32px"></span><span class="use">block stacks</span></div>
+  <div class="row"><span class="name">--16</span><span class="px">64px</span><span class="bar" style="width:64px"></span><span class="use">between sections (mobile)</span></div>
+  <div class="row"><span class="name">--32</span><span class="px">128px</span><span class="bar" style="width:128px"></span><span class="use">between sections (desktop py-32)</span></div>
+</div>
+</body>
+</html>

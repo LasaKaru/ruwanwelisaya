@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heading Scale</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 26px 32px; }
+  .row { display: flex; align-items: baseline; gap: 20px; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.06); }
+  .row:last-child { border-bottom: 0; }
+  .tag { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); width: 44px; flex-shrink: 0; }
+  .spec { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); margin-left: auto; }
+  .h1 { font-family: var(--font-serif); font-size: 36px; letter-spacing: 0.02em; color: #333; line-height: 1.1; }
+  .h2 { font-family: var(--font-serif); font-size: 28px; letter-spacing: 0.02em; color: #333; }
+  .h3 { font-family: var(--font-serif); font-size: 20px; letter-spacing: 0.02em; color: #333; }
+  .h4 { font-family: var(--font-serif); font-size: 16px; letter-spacing: 0.02em; color: #333; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <span class="tag">H1</span><span class="h1">A Legacy of Devotion</span>
+    <span class="spec">Cinzel · 36px</span>
+  </div>
+  <div class="row">
+    <span class="tag">H2</span><span class="h2">Sacred Moments</span>
+    <span class="spec">Cinzel · 28px</span>
+  </div>
+  <div class="row">
+    <span class="tag">H3</span><span class="h3">The Great Stupa</span>
+    <span class="spec">Cinzel · 20px</span>
+  </div>
+  <div class="row">
+    <span class="tag">H4</span><span class="h4">Spiritual Significance</span>
+    <span class="spec">Cinzel · 16px</span>
+  </div>
+</div>
+</body>
+</html>

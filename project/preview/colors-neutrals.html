@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Surfaces & Neutrals</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { padding: 0; }
+  .card { width: 700px; height: 200px; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); }
+  .sw { padding: 16px 14px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; border-right: 1px solid rgba(0,0,0,0.04); }
+  .sw:last-child { border-right: 0; }
+  .name { font-family: var(--font-serif); font-size: 13px; }
+  .hex  { font-family: var(--font-mono); font-size: 10px; }
+  .stupa  { background: #f8f9fa; color: #333; }
+  .warm   { background: #fefdfb; color: #333; }
+  .cream  { background: #faf8f5; color: #333; }
+  .grey-d { background: #333333; color: #fff; }
+  .grey-m { background: #666666; color: #fff; }
+  .grey-l { background: #999999; color: #fff; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="sw stupa">
+    <div class="name">Stupa White</div>
+    <div class="hex">#f8f9fa</div>
+  </div>
+  <div class="sw warm">
+    <div class="name">Warm White</div>
+    <div class="hex">#fefdfb</div>
+  </div>
+  <div class="sw cream">
+    <div class="name">Cream</div>
+    <div class="hex">#faf8f5</div>
+  </div>
+  <div class="sw grey-d">
+    <div class="name">Dark Grey</div>
+    <div class="hex">#333333</div>
+  </div>
+  <div class="sw grey-m">
+    <div class="name">Medium Grey</div>
+    <div class="hex">#666666</div>
+  </div>
+  <div class="sw grey-l">
+    <div class="name">Light Grey</div>
+    <div class="hex">#999999</div>
+  </div>
+</div>
+</body>
+</html>

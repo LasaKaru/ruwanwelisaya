@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Block nothing — the entire site is public and indexable.
+# Disallow admin-only client routes (no server pages exist; listed for clarity).
+Disallow: /*?admin=
+
+# Sitemap
+Sitemap: https://ruwanwelisaya.com/sitemap.xml
+
+# Crawl-delay courtesy for aggressive bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

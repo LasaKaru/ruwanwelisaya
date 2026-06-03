@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dark Mode</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { padding: 0; }
+  .card { width: 700px; height: 200px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: #0f0f0f; }
+  .sw { padding: 16px 14px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; color: #e0ddd8; border-right: 1px solid rgba(255,255,255,0.05); }
+  .sw:last-child { border-right: 0; }
+  .name { font-family: var(--font-serif); font-size: 13px; }
+  .hex  { font-family: var(--font-mono); font-size: 10px; color: #a0a0a0; }
+  .bg   { background: #0f0f0f; }
+  .surf { background: #1a1a1a; }
+  .card2{ background: #1e1e1e; }
+  .gold { background: rgba(212,175,55,0.15); color: #f0ece6; }
+  .bord { background: #0f0f0f; border: 1px solid rgba(212,175,55,0.20); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="sw bg">
+    <div class="name">Base</div>
+    <div class="hex">#0f0f0f</div>
+  </div>
+  <div class="sw surf">
+    <div class="name">Surface</div>
+    <div class="hex">#1a1a1a</div>
+  </div>
+  <div class="sw card2">
+    <div class="name">Card</div>
+    <div class="hex">#1e1e1e</div>
+  </div>
+  <div class="sw gold">
+    <div class="name">Gold Wash</div>
+    <div class="hex">gold @ 15%</div>
+  </div>
+  <div class="sw bord">
+    <div class="name">Gold Border</div>
+    <div class="hex">gold @ 20%</div>
+  </div>
+</div>
+</body>
+</html>

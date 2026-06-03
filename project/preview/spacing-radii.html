@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Corner Radii</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 26px 32px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; text-align: center; }
+  .swatch { height: 72px; background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(199,123,43,0.06)); border: 1px solid rgba(212,175,55,0.30); margin: 0 auto; width: 100%; }
+  .r-0  { border-radius: 0; }
+  .r-sm { border-radius: 2px; }
+  .r-md { border-radius: 6px; }
+  .r-lg { border-radius: 8px; }
+  .r-fl { border-radius: 9999px; height: 36px; margin-top: 18px; }
+  .nm { font-family: var(--font-serif); font-size: 12px; color: #333; margin-top: 8px; }
+  .px { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); margin-top: 2px; }
+  .use { font-family: var(--font-sans); font-size: 10px; color: #666; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="grid">
+    <div>
+      <div class="swatch r-0"></div>
+      <div class="nm">none</div>
+      <div class="px">0px</div>
+      <div class="use">full-bleed</div>
+    </div>
+    <div>
+      <div class="swatch r-sm"></div>
+      <div class="nm">sm</div>
+      <div class="px">2px</div>
+      <div class="use">buttons, inputs</div>
+    </div>
+    <div>
+      <div class="swatch r-md"></div>
+      <div class="nm">md</div>
+      <div class="px">6px</div>
+      <div class="use">tags, badges</div>
+    </div>
+    <div>
+      <div class="swatch r-lg"></div>
+      <div class="nm">lg</div>
+      <div class="px">8px</div>
+      <div class="use">cards, blocks</div>
+    </div>
+    <div>
+      <div class="swatch r-fl"></div>
+      <div class="nm">full</div>
+      <div class="px">9999px</div>
+      <div class="use">pills, avatars</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

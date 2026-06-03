@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Main pages -->
+  <url><loc>https://ruwanwelisaya.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://ruwanwelisaya.com/events</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ruwanwelisaya.com/gallery</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ruwanwelisaya.com/community</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/donate</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Blog posts: Guides -->
+  <url><loc>https://ruwanwelisaya.com/blog/first-time-pilgrim-guide</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/what-to-wear-temple-sri-lanka</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/best-time-to-visit-anuradhapura</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/how-to-reach-ruwanwelisaya</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/anuradhapura-three-day-itinerary</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/photography-rules-at-the-stupa</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/solo-female-traveller-guide-anuradhapura</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/accessibility-mobility-anuradhapura</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/where-to-eat-and-stay-anuradhapura</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog posts: History -->
+  <url><loc>https://ruwanwelisaya.com/blog/dutugemunu-and-the-great-stupa</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/mahavamsa-and-the-stupa</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/king-saddhatissa-completion</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/arahat-mahinda-arrival</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/anuradhapura-ancient-capital</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/sri-maha-bodhi-arrival</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog posts: Events -->
+  <url><loc>https://ruwanwelisaya.com/blog/vesak-2026-around-the-stupa</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/poson-pilgrimage-to-mihintale</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/esala-perahera-and-the-rains-retreat</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/poya-day-observance-practical</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog posts: Architecture -->
+  <url><loc>https://ruwanwelisaya.com/blog/the-elephant-wall</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/anatomy-of-a-stupa</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/ancient-brick-mortar-techniques</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/pinnacle-and-its-symbolism</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/moonstones-of-anuradhapura</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog posts: Conservation -->
+  <url><loc>https://ruwanwelisaya.com/blog/preserving-the-pinnacle</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/unesco-and-the-sacred-city</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/modern-archaeology-anuradhapura</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+
+  <!-- Blog posts: Tradition -->
+  <url><loc>https://ruwanwelisaya.com/blog/pirith-and-the-night</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/lighting-an-oil-lamp</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ruwanwelisaya.com/blog/circumambulation-pradakshina</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+</urlset>

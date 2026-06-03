@@ -1,0 +1,57 @@
+/* Shared styles for design-system preview cards.
+   Each card targets ~700px wide, height varies. */
+@import url("../colors_and_type.css");
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--warm-white);
+  color: var(--dark-grey);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  width: 700px;
+  padding: 24px 28px;
+  background: var(--warm-white);
+}
+
+.card-tight { padding: 20px 24px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.col { display: flex; flex-direction: column; }
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--light-grey);
+  font-weight: 500;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--medium-grey);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--light-grey);
+}
+
+.serif { font-family: var(--font-serif); }
+
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pinnacle-gold), transparent);
+}

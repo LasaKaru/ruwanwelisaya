@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lotus Divider</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 32px 28px; }
+  .row { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 18px 0; }
+  .line { flex: 1; height: 1px; max-width: 120px; }
+  .l-l { background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4)); }
+  .l-r { background: linear-gradient(90deg, rgba(212,175,55,0.4), transparent); }
+  .lotus { color: rgba(212,175,55,0.5); font-size: 22px; }
+  .triple { color: #d4af37; opacity: 0.4; letter-spacing: 0.4em; font-size: 12px; }
+  .spec { font-family: var(--font-mono); font-size: 10px; color: var(--light-grey); text-align: center; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <span class="line l-l"></span>
+    <span class="lotus">✿</span>
+    <span class="line l-r"></span>
+  </div>
+  <div class="spec">footer / section break</div>
+
+  <div class="row" style="padding-top:30px">
+    <span class="triple">✿ ✿ ✿</span>
+  </div>
+  <div class="spec">daily-quote opener</div>
+
+  <div class="row" style="padding-top:30px">
+    <span class="line l-l" style="max-width:64px"></span>
+    <span class="line l-r" style="max-width:64px"></span>
+  </div>
+  <div class="spec">heading underline (no glyph)</div>
+</div>
+</body>
+</html>

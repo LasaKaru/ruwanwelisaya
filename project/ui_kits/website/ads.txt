@@ -1,0 +1,8 @@
+# ads.txt — Authorized Digital Sellers (IAB standard)
+# Replace the publisher ID below with your real Google AdSense / Ad Manager ID
+# once approved. This file MUST be served at the domain root:
+#   https://ruwanwelisaya.com/ads.txt
+#
+# Format: <domain>, <publisher account ID>, <DIRECT|RESELLER>, <certification authority ID>
+
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

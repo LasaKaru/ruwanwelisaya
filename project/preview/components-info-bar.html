@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quick Info Bar</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .card { padding: 28px 32px; background: #faf8f5; border-top: 1px solid rgba(212,175,55,0.10); border-bottom: 1px solid rgba(212,175,55,0.10); display: flex; align-items: center; justify-content: space-around; gap: 24px; }
+  .item { display: flex; align-items: center; gap: 12px; }
+  .item svg { width: 22px; height: 22px; color: #d4af37; stroke-width: 1.5; }
+  .lbl { font-family: var(--font-sans); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #999; margin-bottom: 2px; }
+  .val { font-family: var(--font-sans); font-size: 12px; font-weight: 500; color: #333; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    <div>
+      <div class="lbl">Location</div>
+      <div class="val">Anuradhapura, Sri Lanka</div>
+    </div>
+  </div>
+  <div class="item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <div>
+      <div class="lbl">Open</div>
+      <div class="val">24 Hours, Every Day</div>
+    </div>
+  </div>
+  <div class="item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 0 1 0 18 13 13 0 0 1 0-18z"/></svg>
+    <div>
+      <div class="lbl">Heritage</div>
+      <div class="val">UNESCO World Heritage</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

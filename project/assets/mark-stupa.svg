@@ -1,0 +1,14 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-label="Ruwanwelisaya mark">
+  
+  <path d="M32 4 L32 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  
+  <path d="M27 14 H37 M28.5 17 H35.5 M30 20 H34" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+  
+  <rect x="27" y="22" width="10" height="5" stroke="currentColor" stroke-width="1.4" fill="none"></rect>
+  
+  <path d="M14 48 Q14 28 32 28 Q50 28 50 48 Z" stroke="currentColor" stroke-width="1.6" fill="none"></path>
+  
+  <rect x="10" y="48" width="44" height="3" stroke="currentColor" stroke-width="1.4" fill="none"></rect>
+  <rect x="6" y="53" width="52" height="3" stroke="currentColor" stroke-width="1.4" fill="none"></rect>
+</svg>
