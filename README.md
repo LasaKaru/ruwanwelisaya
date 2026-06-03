@@ -1,25 +1,363 @@
-# CODING AGENTS: READ THIS FIRST
+# Ruwanwelisaya — The Great Stupa of Anuradhapura
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya Maha Stupa**, a Buddhist heritage site in Anuradhapura, Sri Lanka. Fully responsive, SEO-optimized, and integrated with Google AdSense, with hand-drawn animated SVG scene illustrations for each festival and time of day.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)
+![React](https://img.shields.io/badge/React-18.3-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## What you should do — IMPORTANT
+> This codebase was implemented from a [Claude Design](https://claude.ai/design) handoff bundle. The original prototypes and design transcripts are preserved under [`project/`](project/).
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+---
 
-**Read `project/ui_kits/website/index.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+## Table of Contents
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Architecture](#architecture)
+  - [Rendering Model](#rendering-model)
+  - [Component Map](#component-map)
+  - [Data Flow](#data-flow)
+  - [Page Routes](#page-routes)
+- [Google AdSense Integration](#google-adsense-integration)
+- [Admin Panel](#admin-panel)
+- [SEO](#seo)
+- [Styling](#styling)
+- [Deployment](#deployment)
+- [Development Workflow](#development-workflow)
+- [Roadmap](#roadmap)
 
-## About the design files
+---
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## Features
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+| Area | Description |
+|------|-------------|
+| 🏛️ **Home** | Animated SVG stupa hero, history, daily Dhamma quote, gallery & blog previews, donate CTA |
+| 📅 **Events** | Interactive calendar of the 12 Sinhala Poya days + 5 daily temple observances, with per-event detail views |
+| 🖼️ **Gallery** | Filterable masonry grid of animated scene illustrations (golden hour, night, devotion, etc.) |
+| 📝 **Blog** | 26+ in-depth articles with categories, featured posts, related posts, and per-article SEO + JSON-LD |
+| 🪔 **Community** | "Light a virtual lamp" interaction with a live counter, plus a pilgrim reflections forum |
+| ❤️ **Donate** | Donation flow supporting Stripe (card), PayPal, and bank transfer, with fund allocation breakdown |
+| ℹ️ **Static pages** | About, Contact, Privacy Policy — required and structured for AdSense approval |
+| 📢 **Ads** | `AdSlot` components across the site, configurable per-slot via a built-in Admin panel |
+| 🔍 **SEO** | Metadata API, Open Graph, Twitter cards, JSON-LD structured data, `sitemap.xml`, `robots.txt`, `ads.txt` |
+| 🎬 **Animation** | Scroll-reveal (`FadeIn`) + CSS keyframe animations on every SVG scene (lantern sway, flame flicker, bird drift, petal fall) |
 
-## Bundle contents
+---
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Ruwanwelisaya Design System` project files (HTML prototypes, assets, components)
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript 5
+- **UI:** React 18 (server + client components)
+- **Styling:** Plain CSS with custom properties (design tokens) — no CSS framework
+- **Fonts:** `next/font/google` — Cinzel (display) + Inter (body)
+- **Icons / Art:** Inline SVG (no image assets, no external requests)
+- **Persistence:** `localStorage` (ad codes, feature flags) — no backend required
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- **Node.js** ≥ 18.17 (LTS recommended)
+- **npm** ≥ 9 (or pnpm / yarn)
+
+### Install & run
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start the dev server (http://localhost:3000)
+npm run dev
+
+# 3. Production build
+npm run build
+
+# 4. Serve the production build
+npm start
+```
+
+### Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the development server with hot reload |
+| `npm run build` | Create an optimized production build (static export of 41 routes) |
+| `npm start` | Serve the production build |
+
+---
+
+## Project Structure
+
+```
+.
+├── public/
+│   └── ads.txt                 # Google AdSense ads.txt (authorized sellers)
+├── src/
+│   ├── app/                    # App Router: routes, layouts, metadata
+│   │   ├── layout.tsx          # Root layout: fonts, metadata, JSON-LD, Navbar/Footer/Admin
+│   │   ├── page.tsx            # Home (/)
+│   │   ├── globals.css         # All design tokens + component styles (~1180 lines)
+│   │   ├── sitemap.ts          # Dynamic sitemap.xml (static routes + blog slugs)
+│   │   ├── robots.ts           # robots.txt
+│   │   ├── events/page.tsx     # /events
+│   │   ├── gallery/page.tsx    # /gallery
+│   │   ├── blog/
+│   │   │   ├── page.tsx        # /blog index
+│   │   │   └── [slug]/page.tsx # /blog/:slug (generateStaticParams + generateMetadata)
+│   │   ├── community/page.tsx  # /community
+│   │   ├── donate/page.tsx     # /donate
+│   │   ├── about/page.tsx      # /about
+│   │   ├── contact/page.tsx    # /contact
+│   │   └── privacy/page.tsx    # /privacy
+│   ├── components/             # Reusable UI + SVG scene components
+│   │   ├── Navbar.tsx          # Sticky nav, transparent→solid on scroll
+│   │   ├── Footer.tsx          # Links + newsletter form
+│   │   ├── AdSlot.tsx          # Renders ad HTML from localStorage, or placeholder
+│   │   ├── AdminPanel.tsx      # Floating admin (ads / settings / payments)
+│   │   ├── FadeIn.tsx          # IntersectionObserver scroll-reveal wrapper
+│   │   ├── Feedback.tsx        # Star-rating feedback form
+│   │   ├── Icon.tsx            # Inline SVG icon set + Mark/Lotus/LotusDivider
+│   │   ├── StupaScene.tsx      # Animated hero stupa illustration
+│   │   ├── GalleryScene.tsx    # 7 gallery scene illustrations (dispatcher)
+│   │   └── EventScenes.tsx     # Festival scenes (Vesak / Poson / Esala / Poya / Alms)
+│   └── lib/                    # Typed data layer (no DB)
+│       ├── posts.ts            # Blog posts + helpers (getPost, getRelatedPosts)
+│       └── events.ts           # Poya days + daily observances
+├── project/                    # Original Claude Design handoff bundle (prototypes, transcripts)
+├── docs/                       # Architecture & AdSense deep-dive docs
+├── next.config.mjs
+├── tsconfig.json              # Path alias: @/* → ./src/*
+└── package.json
+```
+
+---
+
+## Architecture
+
+### Rendering Model
+
+The site is **statically generated** — every route prerenders to HTML at build time (41 routes including 26 blog posts). There is no server runtime or database; interactive features run client-side and persist to `localStorage`.
+
+```mermaid
+flowchart TD
+    Build["next build"] --> SSG["Static Site Generation"]
+    SSG --> Static["Static pages<br/>(/, /about, /privacy, ...)"]
+    SSG --> Dynamic["generateStaticParams<br/>/blog/[slug] × 26"]
+    SSG --> Meta["sitemap.xml · robots.txt"]
+    Static --> CDN[("Static hosting / CDN")]
+    Dynamic --> CDN
+    Meta --> CDN
+    CDN --> Browser["Browser"]
+    Browser --> Hydrate["Client components hydrate<br/>(Navbar, Admin, scenes, forms)"]
+    Hydrate --> LS[("localStorage<br/>ad codes · feature flags")]
+```
+
+### Component Map
+
+Server components hold the page shells and metadata; `'use client'` components handle interactivity (scroll animation, forms, state, browser APIs).
+
+```mermaid
+flowchart TD
+    Layout["layout.tsx (server)"] --> Navbar["Navbar (client)"]
+    Layout --> Main["children — page"]
+    Layout --> Footer["Footer (client)"]
+    Layout --> Admin["AdminPanel (client)"]
+
+    Main --> Pages["Route pages"]
+    Pages --> FadeIn["FadeIn (client)"]
+    Pages --> AdSlot["AdSlot (client)"]
+    Pages --> Scenes["SVG Scenes (client)"]
+    Pages --> Feedback["Feedback (client)"]
+
+    Scenes --> Stupa["StupaScene"]
+    Scenes --> Gallery["GalleryScene"]
+    Scenes --> Events["EventScenes"]
+
+    AdSlot --> LS[("localStorage")]
+    Admin --> LS
+
+    Pages --> Lib["lib/ data"]
+    Lib --> Posts["posts.ts"]
+    Lib --> Ev["events.ts"]
+```
+
+### Data Flow
+
+There is no API. Content lives in typed TypeScript modules under `src/lib/`:
+
+```mermaid
+flowchart LR
+    subgraph Data["src/lib (build-time)"]
+        Posts["posts.ts<br/>POSTS plus helpers"]
+        Events["events.ts<br/>POYA_DAYS, DAILY_OBSERVANCES"]
+    end
+    subgraph Runtime["Client (browser)"]
+        Admin["AdminPanel"] -->|writes| LS[("localStorage")]
+        AdSlot["AdSlot"] -->|reads| LS
+    end
+    Posts --> Blog["/blog and /blog/[slug]"]
+    Events --> EventsPage["/events"]
+```
+
+- **`posts.ts`** exports `POSTS`, `CATEGORIES`, and helpers `getPost(slug)`, `getPostsByCategory(cat)`, `getRelatedPosts(slug, n)`.
+- **`events.ts`** exports `POYA_DAYS` (12 full-moon days) and `DAILY_OBSERVANCES` (5 daily rituals), with TypeScript interfaces.
+- **`localStorage` keys:** `rw_ad_{slotId}` (ad HTML), `rw_flags` (feature toggles), `rw_payments` (enabled payment methods).
+
+### Page Routes
+
+| Route | File | Rendering | Notes |
+|-------|------|-----------|-------|
+| `/` | `app/page.tsx` | Static | Hero scene, previews, AdSlots, donate CTA |
+| `/events` | `app/events/page.tsx` | Static (client) | Poya calendar + detail views |
+| `/gallery` | `app/gallery/page.tsx` | Static (client) | Filterable masonry |
+| `/blog` | `app/blog/page.tsx` | Static (client) | Featured + grid + filter |
+| `/blog/[slug]` | `app/blog/[slug]/page.tsx` | SSG × 26 | `generateStaticParams` + `generateMetadata` + JSON-LD |
+| `/community` | `app/community/page.tsx` | Static (client) | Virtual lamp + forum |
+| `/donate` | `app/donate/page.tsx` | Static (client) | Stripe / PayPal / Bank |
+| `/about` `/contact` `/privacy` | `app/*/page.tsx` | Static | AdSense-required pages |
+| `/sitemap.xml` `/robots.txt` | `app/sitemap.ts` `app/robots.ts` | Generated | SEO |
+
+---
+
+## Google AdSense Integration
+
+The site is wired for AdSense but ships with **placeholders** so it builds and runs without an account. Full guide: **[docs/ADSENSE.md](docs/ADSENSE.md)**.
+
+### Three steps to go live
+
+1. **Add the loader script.** In `src/app/layout.tsx`, uncomment the AdSense `<script>` in `<head>` and replace `ca-pub-0000000000000000` with your publisher ID:
+
+   ```tsx
+   <script async
+     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossOrigin="anonymous" />
+   ```
+
+2. **Update `public/ads.txt`** with your real publisher ID:
+
+   ```
+   google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+   ```
+
+3. **Configure each ad slot** via the Admin panel (see below), pasting the AdSense `<ins class="adsbygoogle">…</ins>` snippet for each slot ID.
+
+### Ad slot inventory
+
+| Slot ID | Size | Location |
+|---------|------|----------|
+| `home-top` | leaderboard | Home, below info bar |
+| `home-mid` | leaderboard | Home, between gallery and blog |
+| `home-bottom` | rectangle | Home footer / Events page |
+| `blog-sidebar` | rectangle | Blog detail (reserved) |
+| `blog-inline` | leaderboard | Inside article body (~⅓ down) |
+
+`AdSlot` renders the saved HTML via `dangerouslySetInnerHTML`; when empty it shows a labeled placeholder.
+
+---
+
+## Admin Panel
+
+A floating **Admin** button (bottom-left) opens a control panel. Toggle it any time with <kbd>⌘ .</kbd> / <kbd>Ctrl .</kbd>.
+
+| Tab | Purpose |
+|-----|---------|
+| **Ads** | Paste AdSense / affiliate / custom HTML per slot; Save / Insert demo / Clear |
+| **Settings** | Feature flags: `showAds`, `festivalBanner`, `lampCounter`, `animations` |
+| **Payments** | Enable/disable Stripe, PayPal, Bank on the donate page |
+| **Reset** | Clear all saved ad codes and settings |
+
+Everything persists to `localStorage` — no backend, no build step needed to change ads.
+
+> **Note:** This is a client-side convenience panel, not an authenticated CMS. For multi-user or secured admin, see the [Roadmap](#roadmap).
+
+---
+
+## SEO
+
+- **Metadata API** — per-page `title`, `description`, keywords, Open Graph, and Twitter cards via Next.js `Metadata`.
+- **Structured data (JSON-LD):**
+  - `WebSite` + `LandmarksOrHistoricalBuildings` in the root layout
+  - `Article` per blog post (`generateMetadata` + inline `<script type="application/ld+json">`)
+- **`sitemap.xml`** — generated from static routes + all blog slugs (`app/sitemap.ts`).
+- **`robots.txt`** — allows all, points to the sitemap (`app/robots.ts`).
+- **`ads.txt`** — authorized digital sellers declaration.
+- **Semantic HTML** — single `<h1>` per page, landmark regions, `alt`/`aria` on interactive elements.
+
+---
+
+## Styling
+
+All styling lives in `src/app/globals.css` as plain CSS with custom-property design tokens (colors, spacing, typography). Class names use the `rw-` prefix (e.g. `rw-hero`, `rw-post-card`). There is **no Tailwind or CSS-in-JS** — the design tokens come straight from the original design system.
+
+Two Google fonts are exposed as CSS variables via `next/font`:
+
+- `--font-cinzel` — display / headings
+- `--font-inter` — body / UI
+
+---
+
+## Deployment
+
+The app is a standard Next.js project and deploys anywhere Next.js is supported.
+
+### Vercel (recommended)
+
+```bash
+# Connect the GitHub repo at vercel.com/new, or:
+npx vercel
+```
+
+### Any Node host
+
+```bash
+npm run build
+npm start    # serves on $PORT (default 3000)
+```
+
+### Static export
+
+Because all routes are statically generated, this can also be exported and served from any static host / CDN.
+
+---
+
+## Development Workflow
+
+This repository is maintained with living documentation. **Every future change should keep the docs in sync:**
+
+1. Create a feature branch.
+2. Make the change. If it adds/alters a page, component, data shape, route, or ad slot:
+   - Update the relevant section of this **README**.
+   - Update **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** and the Mermaid diagrams if the structure changed.
+   - Add an entry to **[CHANGELOG.md](CHANGELOG.md)**.
+3. Run `npm run build` to confirm a clean type-checked build.
+4. Commit with a descriptive message and push.
+
+See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the deep-dive and **[docs/ADSENSE.md](docs/ADSENSE.md)** for the full ad-setup guide.
+
+---
+
+## Roadmap
+
+- [ ] Authenticated, server-side admin (replace the localStorage panel)
+- [ ] Real backend for forum posts, photo uploads, and the lamp counter
+- [ ] Live Stripe / PayPal payment processing (currently UI-only)
+- [ ] Newsletter integration (currently UI-only)
+- [ ] Cookie-consent banner for EEA/UK personalized ads
+- [ ] i18n (Sinhala / Tamil / English)
+- [ ] Real photography to complement the SVG scenes
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+🙏 _May this work bring merit and be of benefit to all who visit._
