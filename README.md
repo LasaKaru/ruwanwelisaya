@@ -23,7 +23,7 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
   - [Data Flow](#data-flow)
   - [Page Routes](#page-routes)
 - [Google AdSense Integration](#google-adsense-integration)
-- [Admin Panel](#admin-panel)
+- [Admin Console](#admin-console)
 - [SEO](#seo)
 - [Styling](#styling)
 - [Deployment](#deployment)
@@ -58,7 +58,7 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 - **Styling:** Plain CSS with custom properties (design tokens) — no CSS framework
 - **Fonts:** `next/font/google` — Cinzel (display) + Inter (body)
 - **Icons / Art:** Inline SVG (no image assets, no external requests)
-- **Auth:** Edge middleware + signed JWT session cookie via [`jose`](https://github.com/panva/jose)
+- **Auth:** Edge middleware + signed JWT session ([`jose`](https://github.com/panva/jose)), scrypt password hashing, login rate limiting, security headers
 - **Persistence:** `localStorage` (ad codes, feature flags) — no database required
 
 ---
@@ -97,8 +97,9 @@ Copy `.env.example` → `.env.local` and fill these in (the app falls back to in
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ADMIN_USERNAME` | recommended | Username for the `/admin` login (default `admin`) |
-| `ADMIN_PASSWORD` | **yes (prod)** | Password for the `/admin` login |
-| `AUTH_SECRET` | **yes (prod)** | Secret that signs the admin session JWT — use 32+ random chars (`openssl rand -base64 32`) |
+| `ADMIN_PASSWORD` | one of these | Plaintext admin password |
+| `ADMIN_PASSWORD_HASH` | one of these | **Recommended** — scrypt hash; takes precedence. Generate with `node scripts/hash-password.mjs '<pass>'` |
+| `AUTH_SECRET` | **yes (prod)** | Secret that signs the admin session JWT — 32+ random chars (`openssl rand -base64 32`) |
 | `NEXT_PUBLIC_ADSENSE_CLIENT` | optional | Your AdSense publisher ID, e.g. `ca-pub-…` |
 
 ### Scripts
@@ -134,30 +135,35 @@ Copy `.env.example` → `.env.local` and fill these in (the app falls back to in
 │   │   ├── about/page.tsx      # /about
 │   │   ├── contact/page.tsx    # /contact
 │   │   ├── privacy/page.tsx    # /privacy
-│   │   └── admin/             # 🔐 Login-protected admin area
-│   │       ├── actions.ts      # Server actions: loginAction / logoutAction
-│   │       ├── page.tsx        # /admin dashboard (session-gated)
+│   │   └── admin/             # 🔐 Login-protected admin console
+│   │       ├── actions.ts      # Server actions: login (rate-limited) / logout
+│   │       ├── page.tsx        # /admin dashboard (session-gated, dynamic)
 │   │       └── login/page.tsx  # /admin/login form
 │   ├── middleware.ts           # Protects /admin/* (redirects to login)
 │   ├── components/             # Reusable UI + SVG scene components
 │   │   ├── Navbar.tsx          # Sticky nav, solid off-home, hidden on /admin
 │   │   ├── Footer.tsx          # Links + newsletter form, hidden on /admin
 │   │   ├── AdSlot.tsx          # Renders ad HTML from localStorage, or placeholder
-│   │   ├── AdminDashboard.tsx  # Admin controls (ads / settings / payments / reset)
+│   │   ├── AdminDashboard.tsx  # Sidebar console: Overview/Ads/Appearance/Payments/Security
 │   │   ├── FadeIn.tsx          # IntersectionObserver scroll-reveal wrapper
 │   │   ├── Feedback.tsx        # Star-rating feedback form
 │   │   ├── Icon.tsx            # Inline SVG icon set + Mark/Lotus/LotusDivider
 │   │   ├── StupaScene.tsx      # Animated hero stupa illustration
 │   │   ├── GalleryScene.tsx    # 7 gallery scene illustrations (dispatcher)
 │   │   └── EventScenes.tsx     # Festival scenes (Vesak / Poson / Esala / Poya / Alms)
-│   └── lib/                    # Typed data layer (no DB)
+│   └── lib/                    # Typed data + auth layer (no DB)
 │       ├── posts.ts            # Blog posts + helpers (getPost, getRelatedPosts)
 │       ├── events.ts           # Poya days + daily observances
-│       └── auth.ts             # Session JWT + credential helpers
+│       ├── auth.ts             # Edge-safe session JWT (jose)
+│       ├── credentials.ts      # Node-only credential check (scrypt / plaintext)
+│       └── rate-limit.ts       # In-memory login rate limiter
+├── scripts/
+│   └── hash-password.mjs       # Generate ADMIN_PASSWORD_HASH (scrypt)
 ├── .env.example                # Documents required environment variables
+├── SECURITY.md                 # Security posture & hardening guide
 ├── project/                    # Original Claude Design handoff bundle (prototypes, transcripts)
 ├── docs/                       # Architecture & AdSense deep-dive docs
-├── next.config.mjs
+├── next.config.mjs            # Security headers, image config
 ├── tsconfig.json              # Path alias: @/* → ./src/*
 └── package.json
 ```
@@ -289,39 +295,47 @@ The site is wired for AdSense but ships with **placeholders** so it builds and r
 
 ---
 
-## Admin Panel
+## Admin Console
 
-The admin area is **login-protected**. Visit **`/admin`** (also linked discreetly in the footer) — unauthenticated visitors are redirected to **`/admin/login`**.
+A redesigned, **login-protected** admin console lives at **`/admin`** (also linked discreetly in the footer). Unauthenticated visitors are redirected to **`/admin/login`**. Full security details: **[SECURITY.md](SECURITY.md)**.
 
 ### How auth works
 
 ```mermaid
 flowchart LR
-    U["Visitor → /admin"] --> M{"middleware.ts<br/>valid session cookie?"}
+    U["Visitor → /admin"] --> M{"middleware.ts<br/>valid session?"}
     M -- no --> L["/admin/login"]
-    L --> A["loginAction (server)<br/>verify credentials"]
-    A -- ok --> C["Set httpOnly JWT cookie<br/>(jose, HS256, 8h)"]
-    C --> D["/admin dashboard"]
+    L --> R{"rate limit OK?<br/>5 / 15min per IP"}
+    R -- no --> X["Locked 15 min"]
+    R -- yes --> A["verify credentials<br/>scrypt or plaintext, timing-safe"]
+    A -- ok --> C["Set httpOnly JWT cookie<br/>(jose HS256, 8h)"]
+    C --> D["/admin console"]
     M -- yes --> D
-    D --> O["logoutAction → clear cookie"]
+    D --> O["logout → clear cookie"]
 ```
 
-- Credentials come from `ADMIN_USERNAME` / `ADMIN_PASSWORD`; the session JWT is signed with `AUTH_SECRET` (see [environment variables](#environment-variables)).
-- The session cookie is **httpOnly**, `sameSite=lax`, and `secure` in production.
-- `src/middleware.ts` guards every `/admin/*` route except the login page.
+### Security features
 
-### Dashboard tabs
+- **Edge middleware** guards every `/admin/*` route (`src/middleware.ts`).
+- **Signed JWT session** (`jose`, HS256, 8h) in an **httpOnly**, `sameSite=lax`, `secure` (prod) cookie.
+- **Credentials from env** — `ADMIN_USERNAME` + `ADMIN_PASSWORD`, or a **scrypt** `ADMIN_PASSWORD_HASH` (recommended). Both compared with timing-safe routines.
+- **Login rate limiting** — 5 failed attempts / 15 min per IP → lockout.
+- **Security headers** — `X-Frame-Options: DENY`, `no-store`, `noindex` on `/admin` (see `next.config.mjs`).
+- **Edge/Node split** — `node:crypto` lives in `credentials.ts`; the edge bundle only carries the `jose` session helpers.
 
-| Tab | Purpose |
-|-----|---------|
-| **Ads** | Paste AdSense / affiliate / custom HTML per slot; Save / Insert demo / Clear |
-| **Settings** | Feature flags: `showAds`, `festivalBanner`, `lampCounter`, `animations` |
-| **Payments** | Enable/disable Stripe, PayPal, Bank on the donate page |
-| **Reset** | Clear all saved ad codes and settings |
+### Console sections
 
-Ad codes and flags persist to `localStorage` (per-browser). The dashboard itself is gated behind login.
+| Section | Purpose |
+|---------|---------|
+| **Overview** | Session status, content/ad/payment stats, security health, quick links |
+| **Advertisements** | Per-slot AdSense / custom HTML editor with status, live preview, save / demo / clear |
+| **Appearance** | Feature flags: `showAds`, `festivalBanner`, `lampCounter`, `animations` |
+| **Payments** | Toggle Stripe, PayPal, Bank on the donate page |
+| **Security** | Session details, credential checklist, hardening tips, reset (danger zone) |
 
-> **Note:** The login authenticates *access to the dashboard*; ad config is still stored per-browser in `localStorage`. For shared, server-side ad configuration, see the [Roadmap](#roadmap).
+Ad codes and flags persist to `localStorage` (per-browser); the console itself is gated behind login.
+
+> **Note:** Login authenticates *access to the console*; ad config is still stored per-browser in `localStorage`. For shared, server-side ad configuration, see the [Roadmap](#roadmap).
 
 ---
 
@@ -392,6 +406,8 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the deep-dive and **[do
 ## Roadmap
 
 - [x] Authenticated admin with login + session middleware
+- [x] Admin hardening — scrypt passwords, login rate limiting, security headers
+- [ ] Next.js 15+ upgrade (clears remaining advisories; needs async `cookies()`/`params` migration)
 - [ ] Server-side ad/config storage (shared across browsers, not just localStorage)
 - [ ] Real backend for forum posts, photo uploads, and the lamp counter
 - [ ] Live Stripe / PayPal payment processing (currently UI-only)

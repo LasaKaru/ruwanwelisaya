@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-06-04
+
+### Added
+- **Redesigned admin console** (`components/AdminDashboard.tsx`) — sidebar layout with five sections: Overview (session + stats + health), Advertisements (per-slot editor with status pills + live preview), Appearance (feature flags), Payments, and Security (session details, credential checklist, hardening tips, danger zone). Fully responsive with an off-canvas mobile sidebar.
+- **Hardened admin security:**
+  - `src/lib/credentials.ts` — Node-only credential check supporting **scrypt** `ADMIN_PASSWORD_HASH` or plaintext `ADMIN_PASSWORD`, both timing-safe.
+  - `src/lib/rate-limit.ts` — in-memory login rate limiter (5 / 15 min per IP → lockout).
+  - `scripts/hash-password.mjs` — generate an `ADMIN_PASSWORD_HASH`.
+  - Login server action now rate-limits per client IP and reports remaining attempts.
+  - Security headers in `next.config.mjs` (HSTS, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`; `/admin` gets `DENY` + `no-store` + `noindex`); `poweredByHeader` disabled.
+- `SECURITY.md` — security posture, hardening guide, and dependency-advisory analysis.
+- `.env.example` updated with `ADMIN_PASSWORD_HASH`; `npm run lint` script added.
+
+### Changed
+- **Security:** upgraded `next` 14.2.5 → **14.2.35** (patches the middleware-bypass CVE and others) and added a `postcss ^8.5.10` override (fixes the moderate XSS advisory).
+- `src/lib/auth.ts` slimmed to edge-safe session helpers only (credential logic moved to `credentials.ts`).
+- `app/admin/page.tsx` is now `force-dynamic` and passes session/security/stats into the dashboard.
+- Docs: README (Admin Console section + security features, env vars, structure), `docs/ARCHITECTURE.md` (auth deep-dive), `docs/ADSENSE.md`.
+
+### Notes
+- Remaining `npm audit` items require a Next 15+ major upgrade and target features this site does not use (no `next/image`, rewrites, i18n, Pages Router, CSP nonces, or WebSocket upgrades). See SECURITY.md. Tracked as a deliberate future upgrade.
+- Build verified: 43 routes, zero TypeScript errors.
+
 ## [1.1.0] — 2026-06-03
 
 ### Added

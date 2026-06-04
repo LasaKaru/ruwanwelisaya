@@ -163,8 +163,15 @@ sequenceDiagram
 - **`jose`** is used (not `jsonwebtoken`) because it runs in the **edge runtime** where the middleware executes.
 - The token is **HS256**, signed with `AUTH_SECRET`, carrying `{ username, role: 'admin' }`, expiring in 8h.
 - Cookie is **httpOnly** (no JS access), `sameSite=lax`, `secure` in production.
-- Credentials live in **env vars** (`ADMIN_USERNAME` / `ADMIN_PASSWORD`); insecure dev defaults are used only when unset, and `/admin` shows a warning banner in that case (`usingDefaultCredentials()`).
-- This is **single-operator** auth. For multiple users / roles, swap `lib/auth.ts` for a provider like Auth.js — the middleware contract (`verifySessionToken`) stays the same.
+- **Edge/Node split:** session helpers live in `lib/auth.ts` (edge-safe, jose only). Credential verification lives in `lib/credentials.ts` (**Node only** — uses `node:crypto` scrypt) so `node:crypto` never enters the edge middleware bundle. Login rate limiting is `lib/rate-limit.ts`.
+- **Credentials:** `ADMIN_USERNAME` + either `ADMIN_PASSWORD` (plaintext) or `ADMIN_PASSWORD_HASH` (scrypt `salt:hash`, verified with `timingSafeEqual`). Generate a hash via `scripts/hash-password.mjs`. Insecure dev defaults are used only when unset, and `/admin` shows a warning banner (`usingDefaultCredentials()`).
+- **Rate limiting:** 5 failed attempts / 15 min per IP → 15-minute lockout (best-effort in-memory; swap for Redis in multi-instance deployments — same interface).
+- **Headers:** `next.config.mjs` sets global security headers and tightens `/admin` (`X-Frame-Options: DENY`, `Cache-Control: no-store`, `X-Robots-Tag: noindex`).
+- This is **single-operator** auth. For multiple users / roles, swap the credential layer for a provider like Auth.js — the middleware contract (`verifySessionToken`) stays the same.
+
+The admin UI (`components/AdminDashboard.tsx`) is a client component with a sidebar and five sections (Overview, Advertisements, Appearance, Payments, Security). The server page (`app/admin/page.tsx`, `force-dynamic`) reads the session + credential status and passes them down as props; ad codes & flags still persist to `localStorage`.
+
+See **[SECURITY.md](../SECURITY.md)** for the full posture and dependency-advisory analysis.
 
 ## 7. Ads & admin
 

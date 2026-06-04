@@ -76,7 +76,7 @@ Saved codes persist in `localStorage` under `rw_ad_{slotId}`. They are **per-bro
 
 ## Production hardening (recommended)
 
-Access to the admin dashboard is now **login-protected** (see the [Admin Panel](../README.md#admin-panel) section). The ad codes themselves, however, are still stored **client-side and per-browser** in `localStorage`. For a real deployment you should move ad configuration server-side:
+Access to the admin dashboard is now **login-protected** (see the [Admin Console](../README.md#admin-console) section). The ad codes themselves, however, are still stored **client-side and per-browser** in `localStorage`. For a real deployment you should move ad configuration server-side:
 
 1. Store slot HTML in an env var, CMS, or small DB.
 2. Render it from a server component (so every visitor sees the same ads and there's no flash of placeholder).
