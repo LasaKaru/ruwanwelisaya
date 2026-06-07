@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Icon, { Mark } from './Icon';
+import { ADSENSE_CLIENT } from '@/lib/consent';
 
 /* ----------------------------- config ----------------------------- */
 
@@ -96,7 +97,10 @@ export default function AdminDashboard({ username, sessionExpiry, security, stat
 
   const resetAll = useCallback(() => {
     try {
-      AD_SLOTS.forEach(s => localStorage.removeItem(`rw_ad_${s.id}`));
+      AD_SLOTS.forEach(s => {
+        localStorage.removeItem(`rw_ad_${s.id}`);
+        localStorage.removeItem(`rw_adslot_${s.id}`);
+      });
       localStorage.removeItem('rw_flags');
       localStorage.removeItem('rw_payments');
     } catch {}
@@ -272,21 +276,52 @@ function AdsManager({ adCodes, setAdCode, persistAd }: {
   const [editing, setEditing] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
+  const [slotIds, setSlotIds] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    try {
+      const ids: Record<string, string> = {};
+      AD_SLOTS.forEach(s => { ids[s.id] = localStorage.getItem(`rw_adslot_${s.id}`) || ''; });
+      setSlotIds(ids);
+    } catch {}
+  }, []);
+
+  const setSlotId = (id: string, v: string) => setSlotIds(prev => ({ ...prev, [id]: v }));
 
   const save = (id: string) => {
     persistAd(id, adCodes[id] || '');
+    try {
+      const v = (slotIds[id] || '').trim();
+      if (v) localStorage.setItem(`rw_adslot_${id}`, v);
+      else localStorage.removeItem(`rw_adslot_${id}`);
+    } catch {}
     setSavedId(id);
     setTimeout(() => setSavedId(s => (s === id ? null : s)), 1800);
   };
   const demo = (id: string) => setAdCode(id, `<div style="background:#f8f4e8;border:1px solid rgba(212,175,55,0.3);padding:20px;text-align:center;font-family:sans-serif"><p style="color:#d4af37;font-size:13px;letter-spacing:0.1em">ADVERTISEMENT</p><p style="color:#666;font-size:12px;margin-top:6px">Demo Ad — ${id}</p></div>`);
-  const clear = (id: string) => { setAdCode(id, ''); persistAd(id, ''); };
+  const clear = (id: string) => {
+    setAdCode(id, ''); persistAd(id, ''); setSlotId(id, '');
+    try { localStorage.removeItem(`rw_adslot_${id}`); } catch {}
+  };
 
   return (
     <>
-      <p className="rw-adm__hint">Each slot accepts an AdSense unit, affiliate snippet, or any custom HTML. Saved to this browser&apos;s storage. See <a href="https://github.com/LasaKaru/ruwanwelisaya/blob/main/docs/ADSENSE.md" target="_blank" rel="noopener noreferrer">the AdSense guide</a>.</p>
+      <div className={`rw-adm__adsense ${ADSENSE_CLIENT ? 'is-on' : ''}`}>
+        <Icon name={ADSENSE_CLIENT ? 'check' : 'shield'} size={16} color={ADSENSE_CLIENT ? '#4f7d4f' : '#c98a1a'} />
+        <span>
+          {ADSENSE_CLIENT
+            ? <>AdSense publisher ID detected: <code>{ADSENSE_CLIENT}</code>. Add a slot ID below to serve live ads (after visitor consent).</>
+            : <>No AdSense publisher ID set. Define <code>NEXT_PUBLIC_ADSENSE_CLIENT</code> to enable live AdSense units. You can still paste custom HTML below.</>}
+        </span>
+      </div>
+
+      <p className="rw-adm__hint">For each slot, enter your AdSense <strong>ad-slot ID</strong> (live units), and/or paste custom HTML as a fallback. Saved to this browser. See <a href="https://github.com/LasaKaru/ruwanwelisaya/blob/main/docs/ADSENSE.md" target="_blank" rel="noopener noreferrer">the AdSense guide</a>.</p>
+
       <div className="rw-adm__slots">
         {AD_SLOTS.map(slot => {
           const code = adCodes[slot.id] || '';
+          const sid = slotIds[slot.id] || '';
+          const configured = !!code || !!sid;
           const isOpen = editing === slot.id;
           return (
             <div key={slot.id} className={`rw-adm__slot ${isOpen ? 'is-open' : ''}`}>
@@ -295,15 +330,22 @@ function AdsManager({ adCodes, setAdCode, persistAd }: {
                   <div className="rw-adm__slot-name">{slot.name}</div>
                   <div className="rw-adm__slot-where">{slot.size} · {slot.where}</div>
                 </div>
-                <span className={`rw-adm__pill ${code ? 'is-on' : ''}`}>{code ? 'Configured' : 'Empty'}</span>
+                <span className={`rw-adm__pill ${configured ? 'is-on' : ''}`}>{configured ? 'Configured' : 'Empty'}</span>
                 <Icon name={isOpen ? 'close' : 'arrow'} size={14} color="#9b8a63" />
               </button>
 
               {isOpen && (
                 <div className="rw-adm__slot-body">
+                  <label className="rw-adm__field-lbl">AdSense ad-slot ID</label>
+                  <input className="rw-adm__input" value={sid} inputMode="numeric"
+                    onChange={e => setSlotId(slot.id, e.target.value)}
+                    placeholder="e.g. 1234567890" />
+
+                  <label className="rw-adm__field-lbl">Custom HTML (fallback / non-AdSense)</label>
                   <textarea className="rw-adm__code" value={code} spellCheck={false}
                     onChange={e => setAdCode(slot.id, e.target.value)}
-                    placeholder={`<!-- paste ad code for ${slot.id} -->`} />
+                    placeholder={`<!-- optional custom HTML for ${slot.id} -->`} />
+
                   <div className="rw-adm__slot-actions">
                     <button className="rw-adm__btn rw-adm__btn--primary" onClick={() => save(slot.id)}>
                       {savedId === slot.id ? '✓ Saved' : 'Save'}
@@ -315,7 +357,7 @@ function AdsManager({ adCodes, setAdCode, persistAd }: {
                   </div>
                   {preview && code && (
                     <div className="rw-adm__preview">
-                      <div className="rw-adm__preview-lbl">Live preview</div>
+                      <div className="rw-adm__preview-lbl">Live preview (custom HTML)</div>
                       <div dangerouslySetInnerHTML={{ __html: code }} />
                     </div>
                   )}

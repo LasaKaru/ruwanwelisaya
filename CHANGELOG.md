@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-06-07
+
+### Added
+- **End-to-end Google AdSense.** Live ad units now work via configuration alone:
+  - `src/components/AdSense.tsx` injects the AdSense library with `next/script` when `NEXT_PUBLIC_ADSENSE_CLIENT` is set **and** consent is granted.
+  - `src/components/AdSlot.tsx` rewritten to render a real `<ins class="adsbygoogle">` unit (publisher ID + per-slot ad-slot ID + consent), falling back to custom HTML, then a placeholder.
+  - Admin → Advertisements: per-slot **ad-slot ID** field (`rw_adslot_{id}`) + publisher-ID status banner.
+- **Cookie-consent banner** (`src/components/ConsentBanner.tsx` + `src/lib/consent.ts`): ads load only after Accept; Decline keeps essential cookies. "Cookie settings" link in the footer re-opens it. Choice stored in `localStorage` and broadcast via a window event.
+
+### Changed
+- `layout.tsx` mounts `<ConsentBanner />` and `<AdSense />` and drops the old commented AdSense `<script>`.
+- Docs: README (AdSense + consent), `docs/ADSENSE.md` (env-based flow + consent), compliance checklist.
+
+### Notes
+- The consent banner is a basic mechanism; pair with a Google-certified CMP for full EEA/UK/CH compliance.
+- Build verified: 43 routes, zero TypeScript errors.
+
 ## [1.2.0] — 2026-06-04
 
 ### Added

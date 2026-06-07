@@ -44,7 +44,8 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 | ❤️ **Donate** | Donation flow supporting Stripe (card), PayPal, and bank transfer, with fund allocation breakdown |
 | ℹ️ **Static pages** | About, Contact, Privacy Policy — required and structured for AdSense approval |
 | 🔐 **Admin** | Login-protected `/admin` dashboard (httpOnly JWT session + route middleware) to manage ads, payments & feature flags |
-| 📢 **Ads** | `AdSlot` components across the site, configurable per-slot from the Admin dashboard |
+| 📢 **Ads** | Real Google AdSense units (env publisher ID + per-slot ID), with custom-HTML fallback, all configurable from the Admin console |
+| 🍪 **Consent** | Cookie-consent banner gating ad cookies; ads load only after consent (EEA/UK-friendly) |
 | 🔍 **SEO** | Metadata API, Open Graph, Twitter cards, JSON-LD structured data, `sitemap.xml`, `robots.txt`, `ads.txt` |
 | 🎬 **Animation** | Scroll-reveal (`FadeIn`) + CSS keyframe animations on every SVG scene (lantern sway, flame flicker, bird drift, petal fall) |
 
@@ -143,7 +144,9 @@ Copy `.env.example` → `.env.local` and fill these in (the app falls back to in
 │   ├── components/             # Reusable UI + SVG scene components
 │   │   ├── Navbar.tsx          # Sticky nav, solid off-home, hidden on /admin
 │   │   ├── Footer.tsx          # Links + newsletter form, hidden on /admin
-│   │   ├── AdSlot.tsx          # Renders ad HTML from localStorage, or placeholder
+│   │   ├── AdSlot.tsx          # AdSense unit → custom HTML → placeholder (consent-aware)
+│   │   ├── AdSense.tsx         # Loads AdSense library (env ID + consent)
+│   │   ├── ConsentBanner.tsx   # Cookie-consent banner
 │   │   ├── AdminDashboard.tsx  # Sidebar console: Overview/Ads/Appearance/Payments/Security
 │   │   ├── FadeIn.tsx          # IntersectionObserver scroll-reveal wrapper
 │   │   ├── Feedback.tsx        # Star-rating feedback form
@@ -156,7 +159,8 @@ Copy `.env.example` → `.env.local` and fill these in (the app falls back to in
 │       ├── events.ts           # Poya days + daily observances
 │       ├── auth.ts             # Edge-safe session JWT (jose)
 │       ├── credentials.ts      # Node-only credential check (scrypt / plaintext)
-│       └── rate-limit.ts       # In-memory login rate limiter
+│       ├── rate-limit.ts       # In-memory login rate limiter
+│       └── consent.ts          # Cookie-consent state (shared by ads + banner)
 ├── scripts/
 │   └── hash-password.mjs       # Generate ADMIN_PASSWORD_HASH (scrypt)
 ├── .env.example                # Documents required environment variables
@@ -261,25 +265,33 @@ flowchart LR
 
 ## Google AdSense Integration
 
-The site is wired for AdSense but ships with **placeholders** so it builds and runs without an account. Full guide: **[docs/ADSENSE.md](docs/ADSENSE.md)**.
+AdSense works through environment + the admin console — no code edits needed. The library loads **only after the visitor consents** to ad cookies. Full guide: **[docs/ADSENSE.md](docs/ADSENSE.md)**.
 
-### Three steps to go live
+### Steps to go live
 
-1. **Add the loader script.** In `src/app/layout.tsx`, uncomment the AdSense `<script>` in `<head>` and replace `ca-pub-0000000000000000` with your publisher ID:
+1. **Set your publisher ID** as an env var (the loader is wired automatically):
 
-   ```tsx
-   <script async
-     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-     crossOrigin="anonymous" />
+   ```
+   NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX
    ```
 
-2. **Update `public/ads.txt`** with your real publisher ID:
+2. **Update `public/ads.txt`** with the same publisher ID:
 
    ```
    google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
    ```
 
-3. **Configure each ad slot** via the Admin panel (see below), pasting the AdSense `<ins class="adsbygoogle">…</ins>` snippet for each slot ID.
+3. **Add a per-slot ad-slot ID** in **Admin → Advertisements** for each slot you want live.
+
+### How `AdSlot` resolves what to render
+
+```
+AdSense unit   →  if NEXT_PUBLIC_ADSENSE_CLIENT + per-slot ad-slot ID + consent granted
+custom HTML    →  else, if HTML was saved for the slot in the admin console
+placeholder    →  otherwise (labelled "Configure in Admin → Advertisements")
+```
+
+The AdSense library (`components/AdSense.tsx`) is injected via `next/script` only when a publisher ID is set **and** the visitor has accepted ad cookies in the consent banner.
 
 ### Ad slot inventory
 
@@ -291,7 +303,9 @@ The site is wired for AdSense but ships with **placeholders** so it builds and r
 | `blog-sidebar` | rectangle | Blog detail (reserved) |
 | `blog-inline` | leaderboard | Inside article body (~⅓ down) |
 
-`AdSlot` renders the saved HTML via `dangerouslySetInnerHTML`; when empty it shows a labeled placeholder.
+### Cookie consent
+
+`ConsentBanner` shows on first visit and stores the choice (`localStorage`). Ads load only on **Accept**; **Decline** keeps essential cookies only. Visitors can change their choice anytime via **Cookie settings** in the footer. This is a basic mechanism — for full EEA/UK/CH compliance, pair it with a Google-certified CMP.
 
 ---
 
@@ -328,7 +342,7 @@ flowchart LR
 | Section | Purpose |
 |---------|---------|
 | **Overview** | Session status, content/ad/payment stats, security health, quick links |
-| **Advertisements** | Per-slot AdSense / custom HTML editor with status, live preview, save / demo / clear |
+| **Advertisements** | Publisher-ID status + per-slot AdSense ad-slot ID and custom-HTML fallback, with status pills, live preview, save / demo / clear |
 | **Appearance** | Feature flags: `showAds`, `festivalBanner`, `lampCounter`, `animations` |
 | **Payments** | Toggle Stripe, PayPal, Bank on the donate page |
 | **Security** | Session details, credential checklist, hardening tips, reset (danger zone) |
@@ -407,6 +421,8 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the deep-dive and **[do
 
 - [x] Authenticated admin with login + session middleware
 - [x] Admin hardening — scrypt passwords, login rate limiting, security headers
+- [x] End-to-end AdSense (env publisher ID + per-slot IDs) with cookie-consent gating
+- [ ] Pair consent banner with a Google-certified CMP for full EEA/UK compliance
 - [ ] Next.js 15+ upgrade (clears remaining advisories; needs async `cookies()`/`params` migration)
 - [ ] Server-side ad/config storage (shared across browsers, not just localStorage)
 - [ ] Real backend for forum posts, photo uploads, and the lamp counter

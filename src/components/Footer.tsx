@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LotusDivider } from './Icon';
 import Icon from './Icon';
+import { reopenConsent } from '@/lib/consent';
 
 const EXPLORE = [
   { label: 'Sacred Events', href: '/events' },
@@ -79,7 +80,10 @@ export default function Footer() {
           </div>
         </div>
         <div className="rw-footer__copyright">
-          © {new Date().getFullYear()} Ruwanwelisaya Preservation. All rights reserved.
+          <span>© {new Date().getFullYear()} Ruwanwelisaya Preservation. All rights reserved.</span>
+          <button type="button" className="rw-footer__cookie" onClick={reopenConsent}>
+            Cookie settings
+          </button>
         </div>
       </div>
     </footer>

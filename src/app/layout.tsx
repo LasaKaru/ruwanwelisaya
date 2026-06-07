@@ -3,6 +3,8 @@ import { Cinzel, Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ConsentBanner from '@/components/ConsentBanner';
+import AdSense from '@/components/AdSense';
 
 const cinzel = Cinzel({
   subsets: ['latin'],
@@ -100,13 +102,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(landmarkJsonLd) }}
         />
-        {/* Google AdSense: replace ca-pub-XXXX with your publisher ID once approved */}
-        {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossOrigin="anonymous"></script> */}
       </head>
       <body>
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ConsentBanner />
+        <AdSense />
       </body>
     </html>
   );
