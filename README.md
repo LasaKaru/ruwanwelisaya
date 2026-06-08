@@ -1,8 +1,8 @@
 # Ruwanwelisaya — The Great Stupa of Anuradhapura
 
-A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya Maha Stupa**, a Buddhist heritage site in Anuradhapura, Sri Lanka. Fully responsive, SEO-optimized, and integrated with Google AdSense, with hand-drawn animated SVG scene illustrations for each festival and time of day.
+A production [Next.js 15](https://nextjs.org/) website for the **Ruwanwelisaya Maha Stupa**, a Buddhist heritage site in Anuradhapura, Sri Lanka. Fully responsive, SEO-optimized, and integrated with Google AdSense, with hand-drawn animated SVG scene illustrations for each festival and time of day.
 
-![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-15.5-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-18.3-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -53,7 +53,7 @@ A production [Next.js 14](https://nextjs.org/) website for the **Ruwanwelisaya M
 
 ## Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 15 (App Router)
 - **Language:** TypeScript 5
 - **UI:** React 18 (server + client components)
 - **Styling:** Plain CSS with custom properties (design tokens) — no CSS framework
@@ -108,7 +108,7 @@ Copy `.env.example` → `.env.local` and fill these in (the app falls back to in
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Start the development server with hot reload |
-| `npm run build` | Create an optimized production build (static export of 41 routes) |
+| `npm run build` | Create an optimized production build (42 routes) |
 | `npm start` | Serve the production build |
 
 ---
@@ -422,13 +422,12 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the deep-dive and **[do
 - [x] Authenticated admin with login + session middleware
 - [x] Admin hardening — scrypt passwords, login rate limiting, security headers
 - [x] End-to-end AdSense (env publisher ID + per-slot IDs) with cookie-consent gating
+- [x] Next.js 15 upgrade — `found 0 vulnerabilities`
 - [ ] Pair consent banner with a Google-certified CMP for full EEA/UK compliance
-- [ ] Next.js 15+ upgrade (clears remaining advisories; needs async `cookies()`/`params` migration)
 - [ ] Server-side ad/config storage (shared across browsers, not just localStorage)
 - [ ] Real backend for forum posts, photo uploads, and the lamp counter
 - [ ] Live Stripe / PayPal payment processing (currently UI-only)
 - [ ] Newsletter integration (currently UI-only)
-- [ ] Cookie-consent banner for EEA/UK personalized ads
 - [ ] i18n (Sinhala / Tamil / English)
 - [ ] Real photography to complement the SVG scenes
 

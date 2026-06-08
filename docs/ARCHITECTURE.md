@@ -2,6 +2,8 @@
 
 This document is the deep-dive companion to the [README](../README.md). It explains *why* the code is shaped the way it is, and is the canonical reference to keep updated as the project evolves.
 
+> **Framework:** Next.js 15 (App Router) on React 18.3. Dynamic APIs are async — `cookies()`, `headers()`, and route `params` are awaited (`app/admin/*`, `app/blog/[slug]`).
+
 ## 1. Guiding principles
 
 1. **No backend until it's needed.** All content is build-time data; all interactivity is client-side. This keeps hosting free/cheap, fast, and trivially scalable behind a CDN.
@@ -22,7 +24,7 @@ sequenceDiagram
     Next->>Next: Render server components to HTML
     Next->>Next: generateStaticParams for /blog/[slug]
     Next->>Next: Emit sitemap.xml, robots.txt
-    Next-->>CDN: 41 static routes + assets
+    Next-->>CDN: 42 routes + assets
     User->>CDN: GET /blog/some-post
     CDN-->>User: Prerendered HTML (fast first paint)
     User->>User: Hydrate client components
@@ -40,7 +42,7 @@ flowchart TD
     end
     subgraph Components["Components — src/components"]
         C1["Chrome: Navbar, Footer"]
-        C2["Ads: AdSlot, AdminPanel"]
+        C2["Ads: AdSlot, AdSense, ConsentBanner, AdminDashboard"]
         C3["Art: StupaScene, GalleryScene, EventScenes, Icon"]
         C4["Utility: FadeIn, Feedback"]
     end

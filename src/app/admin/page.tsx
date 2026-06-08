@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
   // Middleware already gates this route; we read the session for display.
-  const token = cookies().get(SESSION_COOKIE)?.value;
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const session = await verifySessionToken(token);
 
   const security = {

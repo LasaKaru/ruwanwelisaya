@@ -60,23 +60,15 @@ validation, mitigating cross-site request forgery for the admin forms.
 
 ## Dependency advisories
 
-We track `npm audit`. Current status:
+We track `npm audit`. Current status: **`found 0 vulnerabilities`** ✅
 
-- **Patched:** the Next.js middleware-bypass CVE and the `postcss` XSS are
-  fixed — we run **Next 14.2.35** (latest 14.2.x) with a `postcss ^8.5.10`
-  override.
-- **Residual (Next.js):** the remaining advisories are only patched in the
-  **15.5.16+ / 16.x** line (the 14.x line is EOL for them). They target
-  features this site does **not** use:
-  - `next/image` Image Optimization (DoS / cache) — **no `next/image`; all art is inline SVG**, `remotePatterns: []`.
-  - `rewrites` request smuggling — **no rewrites configured**.
-  - Pages-Router + i18n middleware bypass — **App Router only, no i18n**.
-  - CSP-nonce / `beforeInteractive` XSS — **not used**.
-  - WebSocket-upgrade SSRF — **not used**.
-
-  These are therefore low practical risk for this deployment. Moving to Next 15
-  would require breaking changes (async `cookies()`/`headers()`/`params`) and is
-  tracked as a deliberate, separate upgrade in the roadmap.
+- Running **Next.js 15.5.19** (App Router) on **React 18.3** with a
+  `postcss ^8.5.10` override. The Next 14 → 15 upgrade cleared all previously
+  reported advisories (DoS via Server Components / Image Optimizer, RSC cache
+  poisoning, middleware bypass, SSRF via WebSocket upgrades, CSP-nonce XSS,
+  `postcss` XSS, etc.).
+- Re-run `npm audit` after any dependency change; keep Next.js on the latest
+  15.x patch.
 
 ## Reporting
 

@@ -11,8 +11,8 @@ export interface LoginState {
   remaining?: number;
 }
 
-function clientKey(): string {
-  const h = headers();
+async function clientKey(): Promise<string> {
+  const h = await headers();
   const fwd = h.get('x-forwarded-for') || '';
   const ip = fwd.split(',')[0].trim() || h.get('x-real-ip') || 'local';
   return `login:${ip}`;
@@ -23,7 +23,7 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
   const password = String(formData.get('password') || '');
   const from = String(formData.get('from') || '/admin');
 
-  const key = clientKey();
+  const key = await clientKey();
   const gate = checkRateLimit(key);
   if (!gate.allowed) {
     const mins = Math.ceil(gate.retryAfterSec / 60);
@@ -45,7 +45,7 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
   clearRateLimit(key);
 
   const token = await createSessionToken(username);
-  cookies().set(SESSION_COOKIE, token, {
+  (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -57,6 +57,6 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
 }
 
 export async function logoutAction(): Promise<void> {
-  cookies().delete(SESSION_COOKIE);
+  (await cookies()).delete(SESSION_COOKIE);
   redirect('/admin/login');
 }

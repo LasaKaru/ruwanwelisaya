@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-06-08
+
+### Changed
+- **Upgraded Next.js 14.2.35 → 15.5.19** (App Router), keeping React 18.3. `npm audit` now reports **0 vulnerabilities** — this clears all previously residual advisories.
+- Migrated to Next 15's async dynamic APIs:
+  - `await cookies()` in `app/admin/page.tsx` and `app/admin/actions.ts`.
+  - `await headers()` in the login rate-limit key helper.
+  - `params` is now `Promise<{ slug }>` in `app/blog/[slug]/page.tsx` (`generateMetadata` + page both `await params`).
+- `tsconfig.json` `target` bumped to `ES2017` (top-level await; applied by Next).
+- Docs: README (Next 15 badges/stack), `SECURITY.md` (0-vuln status), CHANGELOG, roadmap.
+
+### Notes
+- Build verified: 42 routes, zero TypeScript errors; security headers + admin auth re-tested on Next 15.
+
 ## [1.3.0] — 2026-06-07
 
 ### Added

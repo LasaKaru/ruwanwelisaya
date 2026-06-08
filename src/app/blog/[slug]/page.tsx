@@ -9,7 +9,7 @@ import Icon from '@/components/Icon';
 import { POSTS, getPost, getRelatedPosts, type BodyBlock } from '@/lib/posts';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -17,7 +17,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = getPost(params.slug);
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) return {};
   const desc = post.seo?.description || post.excerpt;
   return {
@@ -67,11 +68,12 @@ function PostBody({ body, adAfter }: { body: BodyBlock[]; adAfter: number }) {
   );
 }
 
-export default function BlogDetailPage({ params }: Props) {
-  const post = getPost(params.slug);
+export default async function BlogDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(params.slug, 3);
+  const related = getRelatedPosts(slug, 3);
   const adAfter = Math.max(2, Math.floor((post.body?.length || 0) / 3));
 
   const jsonLd = {
